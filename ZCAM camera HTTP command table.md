@@ -10,6 +10,7 @@ The command table is based on [ZCAM official HTTP API Doc](https://github.com/im
 command | http url | response
 :-----|:-----  | :----
 get camera info | /info | see below json text
+get camera sn | /ctrl/get?k=sn |
 get commit info | /commit_info | { "mode_name": "eclipse", "git_commit": "63b23314f6", "build_time": "2503281106" }
 get nick name | /ctrl/nick_name | {"name":"E2"}
 camera status | /camera_status | { "isp": "OK", "sync_link": "OK", "stream0_lost_frame": 0, "https_on": false, "code": 0 }

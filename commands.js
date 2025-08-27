@@ -5,6 +5,7 @@
 const commandDescriptions = {
   zh: {
     "camera info": "获取相机信息",
+    "camera sn": "获取相机序列号",
     "commit info": "获取提交信息",
     "nick name": "获取昵称",
     "camera status": "获取相机状态",
@@ -303,6 +304,7 @@ const commandDescriptions = {
   
   en: {
     "camera info": "Get camera information",
+    "camera sn": "Get camera serial number",
     "commit info": "Get commit information",
     "nick name": "Get nickname",
     "camera status": "Get camera status",
@@ -616,6 +618,7 @@ function getCurrentCommandDescription(key) {
 const commands = [
   // ===== Camera Utility =====
   { key: "camera info", url: "/info", category: "utility", description: "" },
+  { key: "camera sn", url: "/ctrl/get?k=sn", category: "utility", description: "" },
   { key: "commit info", url: "/commit_info", category: "utility", description: "" },
   { key: "nick name", url: "/ctrl/nick_name", category: "utility", description: "" },
   { key: "camera status", url: "/camera_status", category: "utility", description: "" },

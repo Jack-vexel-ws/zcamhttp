@@ -2018,11 +2018,20 @@
       const currentIP = getCurrentIP();
 
       // 首先尝试常规搜索（key、当前语言的description和url）
-      let results = commands.filter(c => 
-        c.key.toLowerCase().includes(query) || 
-        (c.description && c.description.toLowerCase().includes(query)) ||
-        c.url.toLowerCase().includes(query)
-      );
+      let results = commands.filter(c => {
+        // 检查key和description
+        const keyMatch = c.key.toLowerCase().includes(query);
+        const descMatch = c.description && c.description.toLowerCase().includes(query);
+        
+        // 检查原始url（相对路径）
+        const urlMatch = c.url.toLowerCase().includes(query);
+        
+        // 检查完整URL（包含IP地址）
+        const fullURL = replaceIPInURL(c.url, currentIP);
+        const fullURLMatch = fullURL.toLowerCase().includes(query);
+        
+        return keyMatch || descMatch || urlMatch || fullURLMatch;
+      });
 
       // 如果没有找到结果，尝试通过多语言描述搜索
       if (results.length === 0 && typeof searchWithDescription === 'function') {
