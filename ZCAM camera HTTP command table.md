@@ -157,6 +157,7 @@ photo capture | /ctrl/still?action=cap
 
 command | http url | response
 :-----|:-----  | :----
+multiple cam mode | /ctrl/get?k=multiple_mode | 
 union auto exposure | /ctrl/get?k=union_ae | `Enable` `Disable`
 union auto white blance | /ctrl/get?k=union_awb| `Enable` `Disable`
 ezlink mode | /ctrl/get?ezlink_mode | `Single` `Main` `Subordinate`

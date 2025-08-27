@@ -50,6 +50,7 @@ const commandDescriptions = {
     "record fps": "获取录制帧率",
     "photo quality": "获取照片质量",
     "photo capture": "拍摄照片",
+    "multiple cam mode": "获取多相机模式",
     "union auto exposure": "获取联合自动曝光",
     "union auto white balance": "获取联合自动白平衡",
     "ezlink mode": "获取EZLink模式",
@@ -347,6 +348,7 @@ const commandDescriptions = {
     "record fps": "Get record FPS",
     "photo quality": "Get photo quality",
     "photo capture": "Capture photo",
+    "multiple cam mode": "Get multiple cam mode",
     "union auto exposure": "Get union auto exposure",
     "union auto white balance": "Get union auto white balance",
     "ezlink mode": "Get EZLink mode",
@@ -669,6 +671,7 @@ const commands = [
   { key: "photo capture", url: "/ctrl/still?action=cap", category: "photo", description: "" },
 
   // ===== Multi Cam =====
+  { key: "multiple cam mode", url: "/ctrl/get?k=multiple_mode", category: "multi_cam", description: "" },
   { key: "union auto exposure", url: "/ctrl/get?k=union_ae", category: "multi_cam", description: "" },
   { key: "union auto white balance", url: "/ctrl/get?k=union_awb", category: "multi_cam", description: "" },
   { key: "ezlink mode", url: "/ctrl/get?ezlink_mode", category: "multi_cam", description: "" },
