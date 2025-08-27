@@ -1,0 +1,2337 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Camera Control Panel</title>
+  <style>
+    /* 深色主题 - Cursor风格 */
+    :root {
+      --bg-primary: #1e1e1e;
+      --bg-secondary: #252526;
+      --bg-tertiary: #2d2d30;
+      --bg-hover: #3c3c3c;
+      --text-primary: #cccccc;
+      --text-secondary: #9cdcfe;
+      --border-color: #3e3c42;
+      --accent-color: #007acc;
+      --accent-hover: #005a9e;
+      --success-color: #4ec9b0;
+      --warning-color: #dcdcaa;
+
+      /* 历史记录变暗颜色 */
+      --history-bg: var(--bg-tertiary);
+      --history-text: #8a8a8a;
+      --history-timestamp: #555555;
+      --history-url-bg: var(--bg-primary);
+      --history-url-text: #999999;
+      --history-button-border: #666666;
+      --history-button-text: #666666;
+      --history-data-bg: var(--bg-primary);
+      --history-data-text: #999999;
+
+      /* 历史记录状态颜色 */
+      --history-success-border: #2d5a4e;
+      --history-error-border: #5a2d2d;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .main-container {
+      display: flex;
+      gap: 20px;
+      max-width: 1400px;
+      margin: 20px auto;
+      min-height: calc(100vh - 40px);
+      align-items: stretch;
+    }
+
+    .left-panel {
+      flex: 1;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      max-height: calc(100vh - 40px);
+      overflow: hidden;
+    }
+
+    .right-panel {
+      flex: 1;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      max-height: calc(100vh - 40px);
+      box-sizing: border-box;
+    }
+
+    .title-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+
+    .title-section h1 {
+      font-size: 28px;
+      margin: 0;
+      color: var(--text-secondary);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .github-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .github-btn:hover {
+      background: var(--bg-hover);
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .github-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .button-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .zcam-doc-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .zcam-doc-btn:hover {
+      background: var(--bg-hover);
+      border-color: var(--success-color);
+      color: var(--success-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .zcam-doc-icon {
+      width: 20px;
+      height: 20px;
+      filter: brightness(0) saturate(100%) invert(70%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(0.9) contrast(0.9);
+    }
+
+    .zcam-doc-btn:hover .zcam-doc-icon {
+      filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(1) contrast(1);
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin: 25px 0 15px 0;
+      color: var(--text-secondary);
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .ip-section {
+      margin-bottom: 20px;
+      padding: 20px;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      flex-shrink: 0;
+    }
+
+    .ip-section label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .ip-section input {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 14px;
+      border: 2px solid var(--border-color);
+      border-radius: 4px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+      outline: none;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    }
+
+    .ip-section input:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.1);
+    }
+
+    .search-section {
+      margin-bottom: 30px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: visible;
+      /* 允许历史记录面板溢出显示 */
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 16px;
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+      outline: none;
+      flex-shrink: 0;
+    }
+
+    input:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.1);
+    }
+
+    input::placeholder {
+      color: #6a6a6a;
+    }
+
+    /* 禁用浏览器默认的历史记录下拉箭头 */
+    input::-webkit-calendar-picker-indicator {
+      display: none !important;
+    }
+
+    input::-webkit-list-button {
+      display: none !important;
+    }
+
+    .results-container {
+      margin-top: 20px;
+      flex: 1;
+      min-height: 0;
+      max-height: none;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-height: 100px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      min-height: 0;
+      max-height: none;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 8px;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    li:hover {
+      background: var(--bg-hover);
+      border-color: var(--accent-color);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    li span {
+      cursor: pointer;
+      flex: 1;
+      color: var(--text-primary);
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 14px;
+    }
+
+    li span:hover {
+      color: var(--text-secondary);
+    }
+
+    .copy-btn {
+      margin-left: 12px;
+      padding: 6px 12px;
+      border: 1px solid var(--accent-color);
+      background: var(--bg-tertiary);
+      color: var(--accent-color);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent-color);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    .open-btn {
+      margin-left: 8px;
+      padding: 6px 12px;
+      border: 1px solid var(--success-color);
+      background: var(--bg-tertiary);
+      color: var(--success-color);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .open-btn:hover {
+      background: var(--success-color);
+      color: #000;
+      transform: translateY(-1px);
+    }
+
+    .favorites {
+      margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+      flex-shrink: 0;
+    }
+
+    #fav-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .favorites button {
+      margin: 0;
+      padding: 10px 18px;
+      font-size: 14px;
+      border: 2px solid var(--accent-color);
+      background: var(--bg-tertiary);
+      color: var(--accent-color);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .favorites button:hover {
+      background: var(--accent-color);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 122, 204, 0.3);
+    }
+
+    .no-results {
+      text-align: center;
+      color: #6a6a6a;
+      font-style: italic;
+      padding: 20px;
+    }
+
+    .response-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+
+    .clear-btn {
+      padding: 6px 12px;
+      border: 1px solid var(--warning-color);
+      background: var(--bg-tertiary);
+      color: var(--warning-color);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .clear-btn:hover {
+      background: var(--warning-color);
+      color: #000;
+    }
+
+    .response-content {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 20px;
+      min-height: 200px;
+      flex: 1;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    /* 命令响应项样式 */
+    .response-item {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      border-left: 4px solid var(--accent-color);
+      transition: all 0.3s ease;
+    }
+
+    .response-item:last-child {
+      margin-bottom: 0;
+    }
+
+    /* 最新执行的命令 - 高亮显示 */
+    .response-item:first-child {
+      background: var(--bg-secondary);
+      border-color: var(--accent-color);
+      box-shadow: 0 2px 8px rgba(0, 122, 204, 0.2);
+    }
+
+    /* 历史记录命令 - 变暗显示 */
+    .response-item:not(:first-child) {
+      background: var(--history-bg);
+      border-color: var(--border-color);
+      opacity: 0.7;
+    }
+
+    .response-item:not(:first-child):hover {
+      opacity: 0.9;
+      background: var(--bg-secondary);
+    }
+
+    .response-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .response-command-name {
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* 历史记录的命令名称变暗 */
+    .response-item:not(:first-child) .response-command-name {
+      color: var(--history-text);
+    }
+
+    .response-timestamp {
+      font-size: 11px;
+      color: #6a6a6a;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    }
+
+    /* 历史记录的时间戳更暗 */
+    .response-item:not(:first-child) .response-timestamp {
+      color: var(--history-timestamp);
+    }
+
+    .response-url {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 11px;
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      word-break: break-all;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 历史记录的URL背景更暗 */
+    .response-item:not(:first-child) .response-url {
+      background: var(--history-url-bg);
+      color: var(--history-url-text);
+    }
+
+    .response-url-text {
+      flex: 1;
+      word-break: break-all;
+    }
+
+    .response-copy-url-btn {
+      flex-shrink: 0;
+      padding: 4px 6px;
+      border: 1px solid var(--accent-color);
+      background: var(--bg-secondary);
+      color: var(--accent-color);
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      min-width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .response-copy-url-btn:hover {
+      background: var(--accent-color);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    /* 历史记录的复制按钮变暗 */
+    .response-item:not(:first-child) .response-copy-url-btn {
+      border-color: var(--history-button-border);
+      color: var(--history-button-text);
+      background: var(--history-url-bg);
+    }
+
+    .response-item:not(:first-child) .response-copy-url-btn:hover {
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+      background: var(--bg-secondary);
+    }
+
+    .response-data {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.4;
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 10px;
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+    }
+
+    /* 历史记录的响应数据背景更暗 */
+    .response-item:not(:first-child) .response-data {
+      background: var(--history-data-bg);
+      color: var(--history-data-text);
+    }
+
+    .response-data pre {
+      margin: 0;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    /* 成功状态 - 最新命令 */
+    .response-item:first-child.response-success {
+      border-left-color: var(--success-color);
+      box-shadow: 0 2px 8px rgba(78, 201, 176, 0.2);
+    }
+
+    /* 失败状态 - 最新命令 */
+    .response-item:first-child.response-error {
+      border-left-color: #ff6b6b;
+      box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
+    }
+
+    /* 成功状态 - 历史记录 */
+    .response-item:not(:first-child).response-success {
+      border-left-color: var(--history-success-border);
+      background: var(--history-bg);
+    }
+
+    /* 失败状态 - 历史记录 */
+    .response-item:not(:first-child).response-error {
+      border-left-color: var(--history-error-border);
+      background: var(--history-bg);
+    }
+
+    .response-loading {
+      border-left-color: var(--accent-color);
+      opacity: 0.8;
+    }
+
+    .no-response {
+      text-align: center;
+      color: #6a6a6a;
+      font-style: italic;
+      padding: 40px 20px;
+    }
+
+    .response-loading {
+      text-align: center;
+      color: var(--text-secondary);
+      padding: 40px 20px;
+    }
+
+    .response-error {
+      color: #ff6b6b;
+      padding: 20px;
+      border: 1px solid #ff6b6b;
+      border-radius: 4px;
+      background: rgba(255, 107, 107, 0.1);
+    }
+
+    .response-success {
+      color: var(--success-color);
+    }
+
+    .command-path-section {
+      margin-top: 20px;
+      padding: 20px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+    }
+
+    .command-path-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .copy-path-btn {
+      padding: 4px 10px;
+      border: 1px solid var(--accent-color);
+      background: var(--bg-secondary);
+      color: var(--accent-color);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .copy-path-btn:hover {
+      background: var(--accent-color);
+      color: white;
+    }
+
+    .command-path-text {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+      padding: 12px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      word-break: break-all;
+      line-height: 1.4;
+    }
+
+    .history-section {
+      margin-top: 20px;
+      padding: 20px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      max-height: 400px;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .clear-history-btn {
+      padding: 4px 10px;
+      border: 1px solid var(--warning-color);
+      background: var(--bg-secondary);
+      color: var(--warning-color);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .clear-history-btn:hover {
+      background: var(--warning-color);
+      color: #000;
+    }
+
+    .history-content {
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    .history-item {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      border-left: 4px solid var(--accent-color);
+    }
+
+    .history-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .history-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .history-command-name {
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .history-timestamp {
+      font-size: 11px;
+      color: #6a6a6a;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    }
+
+    .history-url {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 11px;
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      word-break: break-all;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .history-url-text {
+      flex: 1;
+      word-break: break-all;
+    }
+
+    .history-copy-url-btn {
+      flex-shrink: 0;
+      padding: 4px 6px;
+      border: 1px solid var(--accent-color);
+      background: var(--bg-secondary);
+      color: var(--accent-color);
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      min-width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .history-copy-url-btn:hover {
+      background: var(--accent-color);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    .history-response {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.4;
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 10px;
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+    }
+
+    .history-response pre {
+      margin: 0;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .history-success {
+      border-left-color: var(--success-color);
+    }
+
+    .history-error {
+      border-left-color: #ff6b6b;
+    }
+
+    /* 自定义滚动条样式 */
+    .history-content::-webkit-scrollbar,
+    .history-response::-webkit-scrollbar,
+    .response-content::-webkit-scrollbar,
+    .results-container ul::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .history-content::-webkit-scrollbar-track,
+    .history-response::-webkit-scrollbar-track,
+    .response-content::-webkit-scrollbar-track,
+    .results-container ul::-webkit-scrollbar-track {
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+    }
+
+    .history-content::-webkit-scrollbar-thumb,
+    .history-response::-webkit-scrollbar-thumb,
+    .response-content::-webkit-scrollbar-thumb,
+    .results-container ul::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+
+    .history-content::-webkit-scrollbar-thumb:hover,
+    .history-response::-webkit-scrollbar-thumb:hover,
+    .response-content::-webkit-scrollbar-thumb:hover,
+    .results-container ul::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-color);
+    }
+
+    /* 搜索历史记录样式 */
+    .search-history-container {
+      position: relative;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      overflow: visible;
+      /* 改为visible，确保内容不被截断 */
+      height: auto;
+      min-height: 300px;
+      /* 设置最小高度，确保容器有足够空间 */
+      max-height: 400px;
+      /* 设置最大高度限制 */
+      /* 确保宽度变化时布局稳定 */
+      min-width: 200px;
+      width: 100%;
+      box-sizing: border-box;
+      /* 强制显示所有内容 */
+      display: block;
+    }
+
+    .search-history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-tertiary);
+    }
+
+    .search-history-header span {
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .search-history-header .clear-history-btn {
+      background: none;
+      border: none;
+      color: var(--warning-color);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .search-history-header .clear-history-btn:hover {
+      background: var(--bg-hover);
+      transform: scale(1.1);
+    }
+
+    .search-history-list {
+      max-height: 250px;
+      /* 改为max-height，允许自适应 */
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 8px;
+      /* 为滚动条预留空间 */
+      /* 强制显示滚动条轨道，即使内容不需要滚动 */
+      scrollbar-width: thin;
+      /* Firefox */
+      scrollbar-color: var(--border-color) var(--bg-tertiary);
+      /* Firefox */
+      /* 确保内容能正确显示 */
+      min-height: 200px;
+      /* 设置最小高度 */
+      /* 确保宽度变化时布局稳定 */
+      width: 100%;
+      box-sizing: border-box;
+      /* 防止文本换行影响高度计算 */
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      /* 强制显示内容 */
+      display: block;
+      height: auto;
+    }
+
+    .search-history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid var(--border-color);
+      /* 确保宽度变化时布局稳定 */
+      width: 100%;
+      box-sizing: border-box;
+      /* 防止文本换行影响高度 */
+      min-height: 46px;
+      flex-shrink: 0;
+    }
+
+    .search-history-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-history-item:hover {
+      background: var(--bg-hover);
+    }
+
+    .search-history-item .history-text {
+      color: var(--text-primary);
+      font-size: 14px;
+      flex: 1;
+      /* 防止文本换行影响高度计算 */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+
+    .search-history-item .remove-history-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      opacity: 0.7;
+    }
+
+    .search-history-item .remove-history-btn:hover {
+      background: rgba(255, 107, 107, 0.2);
+      color: #ff6b6b;
+      opacity: 1;
+    }
+
+    /* 搜索框容器相对定位 */
+    .search-section {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+        margin: 10px;
+      }
+
+      .left-panel,
+      .right-panel {
+        padding: 20px;
+      }
+
+      input {
+        font-size: 16px;
+        /* 防止iOS缩放 */
+      }
+    }
+
+    /* 自定义滚动条样式 - 确保搜索历史列表的滚动条可见 */
+    .search-history-list::-webkit-scrollbar {
+      width: 8px;
+      /* 即使内容不需要滚动，也显示滚动条轨道 */
+      display: block;
+    }
+
+    .search-history-list::-webkit-scrollbar-track {
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      /* 确保轨道始终可见 */
+      min-height: 100px;
+    }
+
+    .search-history-list::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+      /* 即使内容不需要滚动，也显示滚动条滑块 */
+      min-height: 20px;
+    }
+
+    .search-history-list::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-color);
+    }
+
+    /* 当内容不需要滚动时，仍然显示滚动条轨道 */
+    .search-history-list::-webkit-scrollbar-thumb:disabled {
+      background: var(--border-color);
+      opacity: 0.5;
+    }
+
+    /* 强制显示滚动条，当内容超出时 */
+    .search-history-list.force-scroll::-webkit-scrollbar-thumb {
+      background: var(--accent-color);
+      opacity: 1;
+    }
+
+    .search-history-list.force-scroll::-webkit-scrollbar-track {
+      background: var(--bg-tertiary);
+      opacity: 1;
+    }
+  </style>
+
+  <!-- 多语言配置 -->
+  <script>
+    // 语言配置
+    const i18n = {
+      zh: {
+        // UI界面文本
+        ui_title: "📷 ZCAM Camera Http Commands",
+        ui_iplabel: "🌐 目标IP地址:",
+        ui_ip_placeholder: "192.168.1.100",
+        ui_search_placeholder: "输入关键字搜索命令，或'?' 列出所有命令",
+        ui_favorites_title: "🚀 常用命令",
+        ui_response_title: "📡 命令响应",
+        ui_clear_btn: "清空",
+        ui_no_response: "执行左侧http命令查看响应",
+
+        // 按钮文本
+        ui_btn_copy: "复制",
+        ui_btn_open: "打开",
+        ui_btn_executing: "执行中...",
+
+        // 搜索历史相关
+        ui_history_title: "🔍 搜索历史",
+        ui_history_clear_btn: "🗑️",
+        ui_history_remove_btn: "×",
+        ui_history_clear_tooltip: "清空搜索历史",
+        ui_history_remove_tooltip: "删除此条历史",
+
+        // 状态和消息
+        ui_msg_executing: "🔄 正在执行命令...",
+        ui_msg_no_results: "没有找到匹配的命令",
+        ui_msg_copied: "✅ 已复制到剪贴板",
+        ui_msg_copy_failed: "复制失败: ",
+        ui_msg_parameters_required: "此命令需要填写以下参数才能执行：",
+        ui_msg_parameters_instruction: "请将URL中的参数占位符替换为实际值。",
+        ui_github_btn_title: "在GitHub上查看",
+        ui_zcam_doc_btn_title: "查看ZCAM HTTP API文档",
+
+        // 错误信息
+        ui_error_http: "❌ HTTP错误: ",
+        ui_error_timeout: "⏰ 请求超时: 连接超时 (",
+        ui_error_timeout_suffix: "秒)，相机IP地址错误或相机未开机",
+        ui_error_network: "❌ 网络错误: ",
+        ui_error_commands_not_loaded: "错误：无法加载命令数据",
+        ui_error_favorites_not_loaded: "错误：无法加载收藏数据",
+        ui_error_check_commands_file: "请检查commands.js文件是否正确加载",
+
+        // 其他文本
+        ui_custom_command: "Custom Command",
+        ui_copy_url_tooltip: "复制链接地址",
+
+        // 调试信息
+        debug_language_detected: "检测到语言",
+        debug_container_status: "容器状态检查",
+        debug_container_element: "容器元素",
+        debug_container_height: "容器高度",
+        debug_container_style: "容器样式",
+        debug_list_element: "列表元素",
+        debug_list_height: "列表高度",
+        debug_height_calculation: "高度计算诊断",
+        debug_panel_width: "面板宽度",
+        debug_header_height: "头部高度",
+        debug_item_count: "列表项数量",
+        debug_item_height: "每个项目高度",
+        debug_total_height: "列表项总高度",
+        debug_actual_height: "实际需要总高度",
+        debug_available_space: "可用空间",
+        debug_search_bottom: "搜索框底部位置",
+        debug_favorites_top: "常用命令顶部位置",
+        debug_url_test: "URL组合测试",
+        debug_input: "输入",
+        debug_output: "输出",
+
+        // 时间戳本地化
+        timestamp_locale_zh: "zh-CN",
+        timestamp_locale_en: "en-US"
+      },
+
+      en: {
+        // UI Interface Text
+        ui_title: "📷 ZCAM Camera Http Commands",
+        ui_iplabel: "🌐 Target IP Address:",
+        ui_ip_placeholder: "192.168.1.100",
+        ui_search_placeholder: "Enter keywords to search commands, or '?' to list all commands",
+        ui_favorites_title: "🚀 Favorite Commands",
+        ui_response_title: "📡 Command Response",
+        ui_clear_btn: "Clear",
+        ui_no_response: "Execute the http command on the left to view the response",
+
+        // Button Text
+        ui_btn_copy: "Copy",
+        ui_btn_open: "Open",
+        ui_btn_executing: "Executing...",
+
+        // Search History Related
+        ui_history_title: "🔍 Search History",
+        ui_history_clear_btn: "🗑️",
+        ui_history_remove_btn: "×",
+        ui_history_clear_tooltip: "Clear search history",
+        ui_history_remove_tooltip: "Delete this history item",
+
+        // Status and Messages
+        ui_msg_executing: "🔄 Executing command...",
+        ui_msg_no_results: "No matching commands found",
+        ui_msg_copied: "✅ Copied to clipboard",
+        ui_msg_copy_failed: "Copy failed: ",
+        ui_msg_parameters_required: "This command requires the following parameters to execute:",
+        ui_msg_parameters_instruction: "Please replace the parameter placeholders in the URL with actual values.",
+        ui_github_btn_title: "View on GitHub",
+        ui_zcam_doc_btn_title: "View ZCAM Http API Doc",
+
+        // Error Messages
+        ui_error_http: "❌ HTTP Error: ",
+        ui_error_timeout: "⏰ Request Timeout: Connection timeout (",
+        ui_error_timeout_suffix: " seconds), camera IP address error or camera not powered on",
+        ui_error_network: "❌ Network Error: ",
+        ui_error_commands_not_loaded: "Error: Failed to load command data",
+        ui_error_favorites_not_loaded: "Error: Failed to load favorites data",
+        ui_error_check_commands_file: "Please check if commands.js file is loaded correctly",
+
+        // Other Text
+        ui_custom_command: "Custom Command",
+        ui_copy_url_tooltip: "Copy link address",
+
+        // Debug Information
+        debug_language_detected: "Language detected",
+        debug_container_status: "Container Status Check",
+        debug_container_element: "Container Element",
+        debug_container_height: "Container Height",
+        debug_container_style: "Container Style",
+        debug_list_element: "List Element",
+        debug_list_height: "List Height",
+        debug_height_calculation: "Height Calculation Diagnosis",
+        debug_panel_width: "Panel Width",
+        debug_header_height: "Header Height",
+        debug_item_count: "Item Count",
+        debug_item_height: "Item Height",
+        debug_total_height: "Total Item Height",
+        debug_actual_height: "Actual Required Height",
+        debug_available_space: "Available Space",
+        debug_search_bottom: "Search Input Bottom Position",
+        debug_favorites_top: "Favorites Top Position",
+        debug_url_test: "URL Combination Test",
+        debug_input: "Input",
+        debug_output: "Output",
+
+        // Timestamp Localization
+        timestamp_locale_zh: "zh-CN",
+        timestamp_locale_en: "en-US"
+      }
+    };
+
+    // 语言检测和设置
+    function detectLanguage() {
+      const browserLang = navigator.language || navigator.userLanguage;
+      const langCode = browserLang.toLowerCase().startsWith('zh') ? 'zh' : 'en';
+
+      // 设置HTML lang属性
+      document.documentElement.lang = langCode;
+
+      // 设置页面标题
+      document.title = i18n[langCode].ui_title;
+
+      return langCode;
+    }
+
+    // 获取当前语言
+    function getCurrentLanguage() {
+      return document.documentElement.lang || 'en';
+    }
+
+    // 获取翻译文本
+    function t(key) {
+      const lang = getCurrentLanguage();
+      return i18n[lang][key] || i18n.en[key] || key;
+    }
+
+    // 获取当前语言的时间戳本地化设置
+    function getTimestampLocale() {
+      const lang = getCurrentLanguage();
+      return i18n[lang].timestamp_locale_zh || i18n.en.timestamp_locale_en || 'en-US';
+    }
+
+    // 应用语言到页面
+    function applyLanguage() {
+      // 处理所有带有 data-i18n 属性的元素
+      document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (key) {
+          element.textContent = t(key);
+        }
+      });
+
+      // 处理所有带有 data-i18n-placeholder 属性的元素
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-i18n-placeholder');
+        if (key) {
+          element.placeholder = t(key);
+        }
+      });
+    }
+  </script>
+</head>
+
+<body>
+  <div class="main-container">
+    <div class="left-panel">
+      <div class="title-section">
+        <h1 data-i18n="ui_title">📷 ZCam Http Commands</h1>
+        <div class="button-group">
+          <a href="https://github.com/Jack-vexel-ws/zcamhttp" id="github-link" class="github-btn" title="View on GitHub" target="_blank">
+            <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </a>
+          <a href="https://github.com/imaginevision/Z-Camera-Doc/blob/master/E2/protocol/http/http.md" id="zcam-doc-btn" class="zcam-doc-btn" title="View ZCAM Http API Doc" target="_blank">
+            <img src="images/zcam_icon.svg" class="zcam-doc-icon" alt="ZCAM Icon">
+          </a>
+        </div>
+      </div>
+
+      <!-- IP地址输入框 -->
+      <div class="ip-section">
+        <label for="ip-input" data-i18n="ui_iplabel">🌐 目标IP地址:</label>
+        <input type="text" id="ip-input" placeholder="192.168.1.100" value="192.168.1.100">
+      </div>
+
+      <!-- 搜索框 -->
+      <div class="search-section">
+        <input type="text" id="search" data-i18n-placeholder="ui_search_placeholder"
+          placeholder="输入关键字搜索命令，或点击搜索结果将URL填入此处，按回车执行" autocomplete="off">
+        <div class="results-container">
+          <ul id="results"></ul>
+        </div>
+      </div>
+
+      <!-- 常用命令按钮 -->
+      <div class="favorites">
+        <h2 data-i18n="ui_favorites_title">🚀 常用命令</h2>
+        <div id="fav-buttons"></div>
+      </div>
+    </div>
+
+    <!-- 右侧响应显示区域 -->
+    <div class="right-panel">
+      <div class="response-header">
+        <h2 data-i18n="ui_response_title">📡 命令响应</h2>
+        <button id="clear-response" class="clear-btn" data-i18n="ui_clear_btn">清空</button>
+      </div>
+      <div id="response-content" class="response-content">
+        <div class="no-response" data-i18n="ui_no_response">点击左侧命令链接查看响应</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="commands.js"></script>
+  <script>
+    // 添加错误处理和调试信息
+    console.log("HTML page loading started");
+
+    // 检测并设置语言
+    const currentLang = detectLanguage();
+    console.log(t("debug_language_detected") + ":", currentLang);
+
+    // 检查commands和favorites变量是否已加载
+    if (typeof commands === 'undefined') {
+      console.error("commands variable is undefined!");
+      document.body.innerHTML = '<h1>' + t('ui_error_commands_not_loaded') + '</h1><p>' + t('ui_error_check_commands_file') + '</p>';
+      throw new Error("commands variable is undefined");
+    }
+
+    if (typeof favorites === 'undefined') {
+      console.error("favorites variable is undefined!");
+      document.body.innerHTML = '<h1>' + t('ui_error_favorites_not_loaded') + '</h1><p>' + t('ui_error_check_commands_file') + '</p>';
+      throw new Error("favorites variable is undefined");
+    }
+
+    console.log("Variable check passed, starting page initialization");
+
+    const ipInput = document.getElementById("ip-input");
+    const input = document.getElementById("search");
+    const results = document.getElementById("results");
+    const favButtons = document.getElementById("fav-buttons");
+    const responseContent = document.getElementById("response-content");
+    const clearResponseBtn = document.getElementById("clear-response");
+
+    // 搜索历史记录管理
+    let searchHistory = JSON.parse(localStorage.getItem('zcamSearchHistory') || '[]');
+    const maxHistoryItems = 10; // Maximum 10 search history items
+
+    // 如果没有历史记录，添加一些示例URL记录用于测试
+    if (searchHistory.length === 0) {
+      const currentIP = getCurrentIP();
+      searchHistory = [
+        `http://${currentIP}/battery`,
+        `http://${currentIP}/zoom`,
+        `http://${currentIP}/status`
+      ];
+      localStorage.setItem('zcamSearchHistory', JSON.stringify(searchHistory));
+      console.log('Added sample URL history records');
+    }
+
+    console.log('Initializing search history:', searchHistory);
+
+    // Get current IP address
+    function getCurrentIP() {
+      return ipInput.value.trim() || "192.168.1.100";
+    }
+
+    // 添加搜索历史记录 - 只保存完整的HTTP URL
+    function addSearchHistory(query) {
+      console.log('addSearchHistory called, query:', query);
+      if (query.trim() === "" || query === "?" || query === "？") {
+        console.log('Skipping invalid query');
+        return;
+      }
+
+      // 只保存完整的HTTP URL，不保存关键字或命令描述
+      if (!query.startsWith('http://') && !query.startsWith('https://')) {
+        console.log('Skipping non-URL query, only saving complete HTTP URLs');
+        return;
+      }
+
+      // Remove duplicates
+      searchHistory = searchHistory.filter(item => item !== query);
+
+      // Add to beginning
+      searchHistory.unshift(query);
+
+      // Limit history count
+      if (searchHistory.length > maxHistoryItems) {
+        searchHistory = searchHistory.slice(0, maxHistoryItems);
+      }
+
+      // Save to local storage
+      localStorage.setItem('zcamSearchHistory', JSON.stringify(searchHistory));
+      console.log('Search history updated, current history:', searchHistory);
+    }
+
+    // 显示搜索历史记录
+    function showSearchHistory() {
+      console.log('showSearchHistory called, history count:', searchHistory.length);
+      if (searchHistory.length === 0) {
+        console.log('No search history records');
+        return;
+      }
+
+      const historyContainer = document.createElement('div');
+      historyContainer.className = 'search-history-container';
+
+      // 获取当前IP地址
+      const currentIP = getCurrentIP();
+
+      // Process history records, replace IP address if it's a complete URL
+      const processedHistory = searchHistory.map(item => {
+        if (item.startsWith('http://') || item.startsWith('https://')) {
+          // Is complete URL, replace IP address
+          const updatedURL = replaceIPInURL(item, currentIP);
+          console.log(`History URL updated: ${item} -> ${updatedURL}`);
+          return updatedURL;
+        }
+        // Not a URL, keep as is
+        return item;
+      });
+
+      historyContainer.innerHTML = `
+           <div class="search-history-header">
+             <span>${t('ui_history_title')}</span>
+             <button class="clear-history-btn" onclick="clearSearchHistory()" title="${t('ui_history_clear_tooltip')}">${t('ui_history_clear_btn')}</button>
+           </div>
+          <div class="search-history-list">
+            ${processedHistory.map((item, index) => `
+              <div class="search-history-item" onclick="selectHistoryItem('${item}', ${index})">
+                <span class="history-text">${item}</span>
+                <button class="remove-history-btn" onclick="removeHistoryItem('${searchHistory[index]}', event)" title="${t('ui_history_remove_tooltip')}">${t('ui_history_remove_btn')}</button>
+              </div>
+            `).join('')}
+          </div>
+        `;
+
+      // Remove existing history container
+      const existingHistory = document.querySelector('.search-history-container');
+      if (existingHistory) {
+        existingHistory.remove();
+      }
+
+      // Insert below search box, before results-container
+      const searchSection = input.parentNode;
+      const resultsContainer = searchSection.querySelector('.results-container');
+      searchSection.insertBefore(historyContainer, resultsContainer);
+
+      // Force wait for DOM rendering to complete before calculating height
+      setTimeout(() => {
+        // Dynamically calculate and set maximum height of history panel
+        adjustHistoryPanelHeight(historyContainer);
+
+        // Check container status again
+        console.log('=== ' + t('debug_container_status') + ' ===');
+        console.log(t('debug_container_element') + ':', historyContainer);
+        console.log(t('debug_container_height') + ':', historyContainer.offsetHeight);
+        console.log(t('debug_container_style') + ':', getComputedStyle(historyContainer));
+        console.log(t('debug_list_element') + ':', historyContainer.querySelector('.search-history-list'));
+        console.log(t('debug_list_height') + ':', historyContainer.querySelector('.search-history-list').offsetHeight);
+
+        console.log('Search history displayed');
+      }, 100);
+    }
+
+    // 选择历史记录项
+    function selectHistoryItem(query, index) {
+      // If index is provided, this is a processed URL, need to get original history item
+      const originalQuery = index !== undefined ? searchHistory[index] : query;
+
+      // Use processed URL (if query is a URL)
+      input.value = query;
+      input.focus();
+
+      // Check if it's URL format
+      if (query.startsWith('http://') || query.startsWith('https://')) {
+        // Is URL, clear search results, wait for user to press Enter
+        results.innerHTML = "";
+        // 全选URL文本，就像浏览器地址栏那样
+        input.select();
+      } else if (query === "?" || query === "？") {
+        // Is question mark, show all commands
+        showResults(commands.map(cmd => ({
+          ...cmd,
+          url: replaceIPInURL(cmd.url, getCurrentIP())
+        })));
+      } else {
+        // Is search keyword, execute search
+        showResults(searchCommands(query));
+      }
+
+      // Hide history
+      hideSearchHistory();
+    }
+
+    // 删除单条历史记录
+    function removeHistoryItem(query, event) {
+      event.stopPropagation();
+      searchHistory = searchHistory.filter(item => item !== query);
+      localStorage.setItem('zcamSearchHistory', JSON.stringify(searchHistory));
+
+      // Re-display history
+      showSearchHistory();
+    }
+
+    // 清空搜索历史
+    function clearSearchHistory() {
+      searchHistory = [];
+      localStorage.removeItem('zcamSearchHistory');
+      hideSearchHistory();
+    }
+
+    // Dynamically adjust history panel height
+    function adjustHistoryPanelHeight(historyContainer) {
+      if (!historyContainer) return;
+
+      // Get position of favorites section
+      const favoritesSection = document.querySelector('.favorites');
+      if (!favoritesSection) return;
+
+      // Get position of search input
+      const searchInput = document.getElementById('search');
+      if (!searchInput) return;
+
+      // Use more stable height calculation method - not dependent on panel width
+      const searchInputBottom = searchInput.offsetTop + searchInput.offsetHeight;
+      const favoritesTop = favoritesSection.offsetTop;
+      const availableHeight = favoritesTop - searchInputBottom - 20; // Subtract 20px margin
+
+      // Get current content height of history panel
+      const headerHeight = historyContainer.querySelector('.search-history-header').offsetHeight;
+      const listElement = historyContainer.querySelector('.search-history-list');
+
+      // Calculate actual required height - use more stable calculation method
+      const historyItems = document.querySelectorAll('.search-history-item');
+      const itemHeight = 46; // Base height of each history item
+      const totalContentHeight = historyItems.length * itemHeight;
+
+      // Key fix: actual required height = header height + total list item height
+      const actualTotalHeight = headerHeight + totalContentHeight;
+
+      // Add width change diagnostic information
+      const leftPanel = document.querySelector('.left-panel');
+      const panelWidth = leftPanel ? leftPanel.offsetWidth : 'unknown';
+
+      console.log('=== ' + t('debug_height_calculation') + ' ===');
+      console.log(t('debug_panel_width') + ':', panelWidth);
+      console.log(t('debug_header_height') + ':', headerHeight);
+      console.log(t('debug_item_count') + ':', historyItems.length);
+      console.log(t('debug_item_height') + ':', itemHeight);
+      console.log(t('debug_total_height') + ':', totalContentHeight);
+      console.log(t('debug_actual_height') + ':', actualTotalHeight);
+      console.log(t('debug_available_space') + ':', availableHeight);
+      console.log(t('debug_search_bottom') + ':', searchInputBottom);
+      console.log(t('debug_favorites_top') + ':', favoritesTop);
+
+      // Use more stable height calculation strategy
+      let calculatedHeight;
+
+      if (availableHeight > actualTotalHeight + 50) {
+        // Sufficient space: use actual required height + buffer space
+        calculatedHeight = actualTotalHeight + 40;
+        console.log('Strategy 1: Sufficient space, use actual required height + buffer');
+      } else if (availableHeight > headerHeight + 100) {
+        // Limited space: use available space minus header height
+        calculatedHeight = availableHeight - headerHeight - 20;
+        console.log('Strategy 2: Limited space, use available space minus header height');
+      } else {
+        // Very limited space: use minimum height, ensure all content can be displayed
+        calculatedHeight = Math.max(250, actualTotalHeight + 20);
+        console.log('Strategy 3: Very limited space, use minimum height');
+      }
+
+      // Set list height
+      listElement.style.maxHeight = `${calculatedHeight}px`;
+      console.log('Final list height set to:', calculatedHeight);
+
+      // Force apply styles and recalculate layout
+      listElement.style.display = 'block';
+      listElement.style.height = 'auto';
+      listElement.style.minHeight = `${calculatedHeight}px`;
+
+      // Force container to recalculate height
+      historyContainer.style.display = 'block';
+      historyContainer.style.height = 'auto';
+      historyContainer.style.minHeight = `${actualTotalHeight + 20}px`;
+
+      // Force browser to recalculate layout
+      listElement.offsetHeight; // Trigger reflow
+      historyContainer.offsetHeight; // Trigger reflow
+    }
+
+
+    // 隐藏搜索历史
+    function hideSearchHistory() {
+      const historyContainer = document.querySelector('.search-history-container');
+      if (historyContainer) {
+        historyContainer.remove();
+      }
+    }
+
+    // Replace IP address in URL
+    function replaceIPInURL(url, newIP) {
+      // If URL is already complete http:// format, replace IP address
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        return url.replace(/http:\/\/[0-9.]+/, `http://${newIP}`);
+      }
+
+      // If URL is relative path (starts with /), combine with IP address
+      if (url.startsWith('/')) {
+        return `http://${newIP}${url}`;
+      }
+
+      // If URL is neither complete path nor relative path, add IP address and /
+      return `http://${newIP}/${url}`;
+    }
+
+    // Test URL combination logic (for development use, can be deleted in production)
+    function testURLCombination() {
+      const testIP = "192.168.1.100";
+      const testCases = [
+        "/info",
+        "/ctrl/nick_name",
+        "/camera_status",
+        "http://192.168.1.200/info",
+        "relative_path"
+      ];
+
+      console.log("=== " + t('debug_url_test') + " ===");
+      testCases.forEach(testURL => {
+        const result = replaceIPInURL(testURL, testIP);
+        console.log(`${t('debug_input')}: ${testURL} -> ${t('debug_output')}: ${result}`);
+      });
+    }
+
+    // Run test after page loads
+    if (typeof window !== 'undefined') {
+      window.addEventListener('load', () => {
+        setTimeout(testURLCombination, 1000);
+      });
+    }
+
+    // Extract command name from URL
+    function extractCommandNameFromURL(url) {
+      try {
+        // First try to find exact URL match in commands.js
+        const currentIP = getCurrentIP();
+
+        // Remove IP address part, get relative path
+        let relativePath = '';
+        if (url.startsWith('http://') || url.startsWith('https://')) {
+          // Remove protocol and IP address parts
+          const urlWithoutProtocol = url.replace(/^https?:\/\//, '');
+          const ipPattern = /^[0-9.]+/;
+          const match = urlWithoutProtocol.match(ipPattern);
+          if (match) {
+            relativePath = urlWithoutProtocol.substring(match[0].length);
+          } else {
+            relativePath = urlWithoutProtocol;
+          }
+        } else {
+          relativePath = url;
+        }
+
+        // Ensure relative path starts with /
+        if (!relativePath.startsWith('/')) {
+          relativePath = '/' + relativePath;
+        }
+
+        console.log('Extracted relative path:', relativePath);
+
+        // Find exact URL match in commands.js
+        const exactMatch = commands.find(cmd => cmd.url === relativePath);
+        if (exactMatch) {
+          console.log('Found exact match command:', exactMatch.key);
+          const description = exactMatch.description;
+          return `${exactMatch.key} - ${description}`;
+        }
+
+        // If no exact match, try to find similar URL (ignore query parameters)
+        const relativePathWithoutQuery = relativePath.split('?')[0];
+        const similarMatch = commands.find(cmd => {
+          const cmdUrlWithoutQuery = cmd.url.split('?')[0];
+          return cmdUrlWithoutQuery === relativePathWithoutQuery;
+        });
+
+        if (similarMatch) {
+          console.log('Found similar match command:', similarMatch.key);
+          const description = similarMatch.description;
+          return `${similarMatch.key} - ${description}`;
+        }
+
+        // If none found, use previous extraction logic
+        console.log('No matching command found, using default extraction logic');
+
+        // Try to extract command name from URL path
+        const urlObj = new URL(url);
+        const pathname = urlObj.pathname;
+        const search = urlObj.search;
+
+        // If there are query parameters (containing equals sign)
+        if (search && search.includes('=')) {
+          // 提取所有等号后面的值
+          const params = new URLSearchParams(search);
+          const values = [];
+
+          for (const [key, value] of params) {
+            if (value && value.trim() !== '') {
+              values.push(value.trim());
+            }
+          }
+
+          // 如果有值，返回用空格连接的结果
+          if (values.length > 0) {
+            return values.join(' ');
+          }
+        }
+
+        // If no query parameters or query parameters are empty, take characters after last slash
+        const pathParts = pathname.split('/').filter(part => part);
+        if (pathParts.length > 0) {
+          return pathParts[pathParts.length - 1];
+        }
+
+        // If no path, return hostname
+        return urlObj.hostname;
+
+      } catch (e) {
+        // If URL parsing fails, try simple string processing
+        try {
+          // 移除协议部分
+          let cleanUrl = url.replace(/^https?:\/\//, '');
+
+          // 移除IP地址部分
+          const ipPattern = /^[0-9.]+/;
+          const match = cleanUrl.match(ipPattern);
+          if (match) {
+            cleanUrl = cleanUrl.substring(match[0].length);
+          }
+
+          // 确保以/开头
+          if (!cleanUrl.startsWith('/')) {
+            cleanUrl = '/' + cleanUrl;
+          }
+
+          // 在commands.js中查找匹配
+          const exactMatch = commands.find(cmd => cmd.url === cleanUrl);
+          if (exactMatch) {
+            const description = exactMatch.description;
+            return `${exactMatch.key} - ${description}`;
+          }
+
+          // 检查是否有查询参数（包含等号）
+          if (cleanUrl.includes('=')) {
+            // 分割路径和查询参数
+            const [pathPart, queryPart] = cleanUrl.split('?');
+
+            if (queryPart && queryPart.includes('=')) {
+              // Extract all values after equals sign
+              const values = [];
+              const params = queryPart.split('&');
+
+              for (const param of params) {
+                if (param.includes('=')) {
+                  const [, value] = param.split('=');
+                  if (value && value.trim() !== '') {
+                    values.push(value.trim());
+                  }
+                }
+              }
+
+              // If there are values, return space-separated result
+              if (values.length > 0) {
+                return values.join(' ');
+              }
+            }
+          }
+
+          // 如果没有查询参数或查询参数为空，分割路径
+          const pathParts = cleanUrl.split('?')[0].split('/').filter(part => part);
+
+          if (pathParts.length > 0) {
+            return pathParts[pathParts.length - 1];
+          }
+
+          return 'Custom Command';
+        } catch (fallbackError) {
+          return 'Custom Command';
+        }
+      }
+    }
+
+    // 格式化JSON显示
+    function formatJSON(jsonString) {
+      try {
+        const obj = JSON.parse(jsonString);
+        return JSON.stringify(obj, null, 2);
+      } catch (e) {
+        return jsonString; // 如果不是有效JSON，直接返回原字符串
+      }
+    }
+
+    // 命令响应管理
+    let commandResponses = [];
+
+    // 添加命令响应
+    function addCommandResponse(commandName, url, responseText, isSuccess, timestamp) {
+      const responseItem = {
+        commandName,
+        url,
+        responseText,
+        isSuccess,
+        timestamp
+      };
+
+      commandResponses.unshift(responseItem); // 添加到开头
+
+      // Limit response count (maximum 20 items)
+      if (commandResponses.length > 20) {
+        commandResponses = commandResponses.slice(0, 20);
+      }
+
+      renderCommandResponses();
+    }
+
+    // 渲染命令响应
+    function renderCommandResponses() {
+      if (commandResponses.length === 0) {
+        responseContent.innerHTML = `<div class="no-response">${t('ui_no_response')}</div>`;
+        return;
+      }
+
+      responseContent.innerHTML = '';
+
+      commandResponses.forEach((item, index) => {
+        const responseItem = document.createElement('div');
+        responseItem.className = `response-item ${item.isSuccess ? 'response-success' : 'response-error'}`;
+
+        // 格式化响应内容
+        let formattedResponse = item.responseText;
+
+        // 尝试检测并格式化JSON内容
+        if (item.responseText.includes('{') || item.responseText.includes('[')) {
+          try {
+            // 移除可能的错误前缀（如 ❌ HTTP错误:）
+            let cleanText = item.responseText;
+            if (cleanText.includes('❌')) {
+              // 找到第一个 { 或 [ 的位置
+              const jsonStart = cleanText.search(/[{\[]/);
+              if (jsonStart !== -1) {
+                const jsonPart = cleanText.substring(jsonStart);
+                try {
+                  const parsed = JSON.parse(jsonPart);
+                  formattedResponse = cleanText.substring(0, jsonStart) + '\n' + JSON.stringify(parsed, null, 2);
+                } catch (e) {
+                  // 如果JSON部分解析失败，保持原样
+                }
+              }
+            } else {
+              // 尝试直接解析为JSON
+              const parsed = JSON.parse(item.responseText);
+              formattedResponse = JSON.stringify(parsed, null, 2);
+            }
+          } catch (e) {
+            // 如果不是有效JSON，保持原文本
+          }
+        }
+
+        responseItem.innerHTML = `
+           <div class="response-item-header">
+             <span class="response-command-name">${item.commandName}</span>
+             <span class="response-timestamp">${item.timestamp}</span>
+           </div>
+           <div class="response-url">
+             <span class="response-url-text">${item.url}</span>
+             <button class="response-copy-url-btn" onclick="copyToClipboard('${item.url}')" title="${t('ui_copy_url_tooltip')}">📋</button>
+           </div>
+           <div class="response-data"><pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;">${formattedResponse}</pre></div>
+         `;
+
+        responseContent.appendChild(responseItem);
+      });
+
+      // 自动滚动到最新响应
+      responseContent.scrollTop = 0;
+    }
+
+    // 执行HTTP请求并显示响应
+    async function executeCommand(url, commandName) {
+      // 定义超时时间（在函数顶部，确保所有代码块都能访问）
+      const timeout = 30000; // 3 second timeout, can be adjusted as needed
+      let loadingItem = null;
+      let timeoutId = null;
+
+      try {
+        // 显示加载状态
+        loadingItem = document.createElement('div');
+        loadingItem.className = 'response-item response-loading';
+        loadingItem.innerHTML = `
+            <div class="response-item-header">
+              <span class="response-command-name">${commandName}</span>
+              <span class="response-timestamp">${t('ui_btn_executing')}</span>
+            </div>
+            <div class="response-url">
+              <span class="response-url-text">${url}</span>
+              <button class="response-copy-url-btn" onclick="copyToClipboard('${url}')" title="${t('ui_copy_url_tooltip')}">📋</button>
+            </div>
+            <div class="response-data">
+              <div style="text-align: center; color: var(--text-secondary); padding: 20px;">
+                🔄 ${t('ui_msg_executing')}
+              </div>
+            </div>
+          `;
+
+        // 将加载项添加到开头
+        responseContent.insertBefore(loadingItem, responseContent.firstChild);
+        responseContent.scrollTop = 0;
+
+        // 创建带超时的fetch请求
+        const controller = new AbortController();
+        timeoutId = setTimeout(() => controller.abort(), timeout);
+
+        // 执行HTTP请求
+        const response = await fetch(url, {
+          signal: controller.signal
+        });
+
+        clearTimeout(timeoutId); // 清除超时定时器
+        const contentType = response.headers.get('content-type');
+
+        if (response.ok) {
+          let responseText = await response.text();
+          let isSuccess = true;
+
+          // 尝试解析JSON并检查code值
+          if (contentType && contentType.includes('application/json')) {
+            try {
+              const jsonObj = JSON.parse(responseText);
+              if (jsonObj.code !== undefined && jsonObj.code !== 0) {
+                isSuccess = false;
+              }
+              responseText = formatJSON(responseText);
+            } catch (e) {
+              // JSON解析失败，保持原文本
+            }
+          }
+
+          // 移除加载项，添加实际响应
+          responseContent.removeChild(loadingItem);
+          const timestamp = new Date().toLocaleString(getTimestampLocale());
+          addCommandResponse(commandName, url, responseText, isSuccess, timestamp);
+        } else {
+          const errorText = `${t('ui_error_http')}${response.status} ${response.statusText}`;
+
+          // 移除加载项，添加错误响应
+          responseContent.removeChild(loadingItem);
+          const timestamp = new Date().toLocaleString(getTimestampLocale());
+          addCommandResponse(commandName, url, errorText, false, timestamp);
+        }
+      } catch (error) {
+        let errorText = '';
+
+        // 检查是否是超时错误
+        if (error.name === 'AbortError') {
+          errorText = `${t('ui_error_timeout')}${timeout / 1000}${t('ui_error_timeout_suffix')}`;
+        } else {
+          errorText = `${t('ui_error_network')}${error.message}`;
+        }
+
+        // 清理超时定时器
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+
+        // 移除加载项，添加错误响应
+        if (loadingItem && loadingItem.parentNode) {
+          responseContent.removeChild(loadingItem);
+        }
+        const timestamp = new Date().toLocaleString(getTimestampLocale());
+        addCommandResponse(commandName, url, errorText, false, timestamp);
+      } finally {
+        // 确保清理超时定时器
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+      }
+    }
+
+    // 搜索功能 - 同时搜索命令的key、description和url，支持多语言描述搜索
+    function searchCommands(query) {
+      query = query.toLowerCase();
+      const currentIP = getCurrentIP();
+
+      // 首先尝试常规搜索（key、当前语言的description和url）
+      let results = commands.filter(c => 
+        c.key.toLowerCase().includes(query) || 
+        (c.description && c.description.toLowerCase().includes(query)) ||
+        c.url.toLowerCase().includes(query)
+      );
+
+      // 如果没有找到结果，尝试通过多语言描述搜索
+      if (results.length === 0 && typeof searchWithDescription === 'function') {
+        const descriptionResults = searchWithDescription(query);
+        if (descriptionResults.length > 0) {
+          // 将多语言搜索结果转换为标准格式
+          results = descriptionResults.map(cmd => ({
+            ...cmd,
+            // 使用匹配到的描述作为显示描述
+            displayDescription: cmd.matchedDescription || cmd.description
+          }));
+        }
+      }
+
+      // 为所有结果添加动态URL
+      return results.map(cmd => ({
+        ...cmd,
+        url: replaceIPInURL(cmd.url, currentIP)
+      }));
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        // 创建临时提示
+        const toast = document.createElement('div');
+        toast.textContent = t('ui_msg_copied');
+        toast.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: var(--success-color);
+          color: #000;
+          padding: 12px 20px;
+          border-radius: 6px;
+          font-weight: 500;
+          z-index: 1000;
+          animation: slideIn 0.3s ease;
+        `;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.remove();
+        }, 2000);
+      }).catch(err => {
+        alert(`${t('ui_msg_copy_failed')}${err}`);
+      });
+    }
+
+    function showResults(list) {
+      results.innerHTML = "";
+
+      if (list.length === 0) {
+        results.innerHTML = `<div class="no-results">${t('ui_msg_no_results')}</div>`;
+        return;
+      }
+
+      list.forEach(cmd => {
+        const li = document.createElement("li");
+
+        // 点击命令将URL填入搜索框
+        const span = document.createElement("span");
+        // 如果有匹配到的多语言描述，优先显示它
+        const displayText = cmd.displayDescription ? 
+          `${cmd.key} (${cmd.displayDescription}) → ${cmd.url}` : 
+          `${cmd.key} → ${cmd.url}`;
+        span.textContent = displayText;
+        span.onclick = () => {
+          // 将完整URL填入搜索框
+          input.value = cmd.url;
+          input.focus();
+
+          // Select all URL text, like browser address bar
+          input.select();
+
+          // 清空搜索结果
+          results.innerHTML = "";
+
+          // 将完整URL添加到历史记录
+          addSearchHistory(cmd.url);
+        };
+
+        // 复制按钮
+        const copyBtn = document.createElement("button");
+        copyBtn.textContent = t('ui_btn_copy');
+        copyBtn.className = "copy-btn";
+        copyBtn.onclick = (e) => {
+          e.stopPropagation();
+          copyToClipboard(cmd.url);
+        };
+
+        // 打开按钮（在新标签页中打开）
+        const openBtn = document.createElement("button");
+        openBtn.textContent = t('ui_btn_open');
+        openBtn.className = "open-btn";
+        openBtn.onclick = (e) => {
+          e.stopPropagation();
+          // 检查URL中是否需要填写参数
+          if (checkURLParameters(cmd.url)) {
+            window.open(cmd.url, '_blank');
+          }
+        };
+
+        li.appendChild(span);
+        li.appendChild(copyBtn);
+        li.appendChild(openBtn);
+        results.appendChild(li);
+      });
+    }
+
+    // 清空响应按钮事件
+    clearResponseBtn.addEventListener("click", () => {
+      commandResponses = [];
+      responseContent.innerHTML = `<div class="no-response">${t('ui_no_response')}</div>`;
+    });
+
+
+
+    // IP地址变化时重新渲染常用命令按钮
+    ipInput.addEventListener("input", () => {
+      renderFavorites();
+      // 如果当前有搜索结果，也重新显示
+      const query = input.value.trim();
+      if (query !== "") {
+        showResults(searchCommands(query));
+      }
+
+      // 如果历史记录面板正在显示，重新显示以更新URL
+      const historyContainer = document.querySelector('.search-history-container');
+      if (historyContainer) {
+        showSearchHistory();
+      }
+    });
+
+    // 搜索框输入事件
+    input.addEventListener("input", () => {
+      const query = input.value.trim();
+      if (query === "") {
+        results.innerHTML = "";
+        // 当输入框为空时，显示历史记录
+        showSearchHistory();
+      } else if (query === "?" || query === "？") {
+        // 当输入问号时，显示所有命令（支持中英文问号）
+        showResults(commands.map(cmd => ({
+          ...cmd,
+          url: replaceIPInURL(cmd.url, getCurrentIP())
+        })));
+        hideSearchHistory(); // 隐藏历史记录
+      } else {
+        showResults(searchCommands(query));
+        hideSearchHistory(); // 隐藏历史记录
+      }
+    });
+
+    // 搜索框失去焦点时，如果是完整URL则添加到历史记录
+    input.addEventListener("blur", () => {
+      const query = input.value.trim();
+      if (query !== "" && query !== "?" && query !== "？" &&
+        (query.startsWith('http://') || query.startsWith('https://'))) {
+        addSearchHistory(query);
+      }
+
+      // 延迟隐藏历史记录，让点击事件先触发
+      // 增加延迟时间，确保点击事件能够正常处理
+      setTimeout(() => {
+        hideSearchHistory();
+      }, 500);
+    });
+
+    // 搜索框获得焦点时显示历史记录
+    input.addEventListener("focus", () => {
+      console.log('Search input focused, current value:', input.value.trim());
+      // 禁用浏览器的默认历史记录
+      input.setAttribute('autocomplete', 'off');
+      input.setAttribute('list', '');
+
+      if (input.value.trim() === "") {
+        console.log('Search input is empty, showing history');
+        showSearchHistory();
+      } else {
+        console.log('Search input has content, not showing history');
+      }
+    });
+
+    // 搜索框失去焦点时隐藏历史记录（延迟执行，让点击事件先触发）
+    // 注意：这个事件监听器已经在上面合并到新的blur事件中了
+
+    // 检查URL中是否需要填写参数
+    function checkURLParameters(url) {
+      // 使用更精确的正则表达式来匹配参数
+      // 匹配 $ 后面跟着非 /、&、? 的字符序列
+      const dollarMatches = url.match(/\$([^/&?]+)/g);
+      if (dollarMatches && dollarMatches.length > 0) {
+        // 保留完整的参数名称（包括$符号），用换行符分隔
+        const parameterList = dollarMatches.join('\n');
+        
+        // 显示多语言参数提醒
+        alert(`${t('ui_msg_parameters_required')}\n${parameterList}\n\n${t('ui_msg_parameters_instruction')}`);
+        return false; // 返回false表示需要填写参数
+      }
+      return true; // 返回true表示可以执行
+    }
+
+    // 按回车键时执行命令或添加搜索历史
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const query = input.value.trim();
+
+        // 检查是否是URL格式
+        if (query.startsWith('http://') || query.startsWith('https://')) {
+          // 检查是否需要填写参数
+          if (checkURLParameters(query)) {
+            // 是URL，执行命令并添加到历史记录
+            const commandName = extractCommandNameFromURL(query);
+            executeCommand(query, commandName);
+            addSearchHistory(query);
+          }
+        }
+      }
+    });
+
+    // 常用命令按钮生成
+    function renderFavorites() {
+      // 清空现有按钮
+      favButtons.innerHTML = "";
+
+      favorites.forEach(favKey => {
+        const cmd = commands.find(c => c.key === favKey);
+        if (cmd) {
+          const btn = document.createElement("button");
+          btn.textContent = cmd.description;
+          btn.onclick = () => {
+            const currentIP = getCurrentIP();
+            const dynamicURL = replaceIPInURL(cmd.url, currentIP);
+
+            // 将完整URL添加到搜索历史
+            addSearchHistory(dynamicURL);
+
+            // 将URL填入搜索框，而不是直接执行
+            input.value = dynamicURL;
+            input.focus();
+
+            // 全选URL文本，就像浏览器地址栏那样
+            input.select();
+
+            // 清空搜索结果
+            results.innerHTML = "";
+          };
+          favButtons.appendChild(btn);
+        }
+      });
+    }
+
+    // 确保搜索框禁用浏览器默认历史记录
+    input.setAttribute('autocomplete', 'off');
+    input.setAttribute('list', '');
+
+    // 监听窗口大小变化，重新调整历史记录面板高度
+    window.addEventListener('resize', () => {
+      const historyContainer = document.querySelector('.search-history-container');
+      if (historyContainer) {
+        adjustHistoryPanelHeight(historyContainer);
+      }
+    });
+
+    // 应用语言到页面
+    applyLanguage();
+
+    // 初始化命令描述
+    if (typeof initializeCommandDescriptions === 'function') {
+      initializeCommandDescriptions();
+      console.log('Command descriptions initialized');
+    }
+
+    console.log("Starting to render favorite buttons");
+    renderFavorites();
+
+    console.log("Page initialization completed");
+
+    // 设置GitHub链接
+    const githubLink = document.getElementById('github-link');
+    if (githubLink) {
+      // 这里您可以设置您的GitHub仓库地址
+      githubLink.href = 'https://github.com/Jack-vexel-ws/zcamhttp';
+      console.log('GitHub button initialized');
+    }
+
+    // 设置ZCAM文档链接
+    const zcamDocLink = document.getElementById('zcam-doc-btn');
+    if (zcamDocLink) {
+      // 这里您可以设置ZCAM官方HTTP文档地址
+      zcamDocLink.href = 'https://github.com/imaginevision/Z-Camera-Doc/blob/master/E2/protocol/http/http.md';
+      console.log('ZCAM Doc button initialized');
+    }
+
+    // 设置按钮的title为多语言
+    const githubBtn = document.getElementById('github-link');
+    if (githubBtn) {
+      githubBtn.title = t('ui_github_btn_title');
+    }
+
+    if (zcamDocLink) {
+      zcamDocLink.title = t('ui_zcam_doc_btn_title');
+    }
+
+    // 将函数暴露到全局作用域，供HTML onclick事件调用
+    window.selectHistoryItem = selectHistoryItem;
+    window.removeHistoryItem = removeHistoryItem;
+    window.clearSearchHistory = clearSearchHistory;
+  </script>
+</body>
+
+</html>
