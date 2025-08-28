@@ -202,8 +202,14 @@
       font-size: 14px;
     }
 
+    .ip-input-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .ip-section input {
-      width: 100%;
+      flex: 1;
       padding: 10px 14px;
       font-size: 14px;
       border: 2px solid var(--border-color);
@@ -218,6 +224,38 @@
     .ip-section input:focus {
       border-color: var(--accent-color);
       box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.1);
+    }
+
+    .camera-admin-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border: 2px solid var(--border-color);
+      border-radius: 4px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      outline: none;
+      flex-shrink: 0;
+    }
+
+    .camera-admin-btn:hover {
+      border-color: var(--accent-color);
+      background: var(--bg-tertiary);
+      transform: translateY(-1px);
+    }
+
+    .camera-admin-btn:active {
+      transform: translateY(0);
+    }
+
+    .camera-admin-icon {
+      width: 20px;
+      height: 20px;
     }
 
     .search-section {
@@ -1118,6 +1156,7 @@
         ui_msg_parameters_instruction: "请将URL中的参数占位符替换为实际值。",
         ui_github_btn_title: "在GitHub上查看",
         ui_zcam_doc_btn_title: "查看ZCAM HTTP API文档",
+        ui_camera_admin_btn_title: "打开相机后台控制",
 
         // 错误信息
         ui_error_http: "❌ HTTP错误: ",
@@ -1191,6 +1230,7 @@
         ui_msg_parameters_instruction: "Please replace the parameter placeholders in the URL with actual values.",
         ui_github_btn_title: "View on GitHub",
         ui_zcam_doc_btn_title: "View ZCAM Http API Doc",
+        ui_camera_admin_btn_title: "Open Camera Admin Panel",
 
         // Error Messages
         ui_error_http: "❌ HTTP Error: ",
@@ -1281,6 +1321,14 @@
           element.placeholder = t(key);
         }
       });
+
+      // 处理所有带有 data-i18n-title 属性的元素
+      document.querySelectorAll('[data-i18n-title]').forEach(element => {
+        const key = element.getAttribute('data-i18n-title');
+        if (key) {
+          element.title = t(key);
+        }
+      });
     }
   </script>
 </head>
@@ -1305,7 +1353,14 @@
       <!-- IP地址输入框 -->
       <div class="ip-section">
         <label for="ip-input" data-i18n="ui_iplabel">🌐 目标IP地址:</label>
-        <input type="text" id="ip-input" placeholder="192.168.1.100" value="192.168.1.100">
+        <div class="ip-input-container">
+          <input type="text" id="ip-input" placeholder="192.168.1.100" value="192.168.1.100">
+          <button id="camera-admin-btn" class="camera-admin-btn" data-i18n-title="ui_camera_admin_btn_title" onclick="openCameraAdmin()">
+            <svg class="camera-admin-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+          </button>
+        </div>
       </div>
 
       <!-- 搜索框 -->
@@ -2336,10 +2391,22 @@
       zcamDocLink.title = t('ui_zcam_doc_btn_title');
     }
 
+    // 打开相机后台控制页面
+    function openCameraAdmin() {
+      const currentIP = getCurrentIP();
+      const adminURL = `http://${currentIP}/www/index.html`;
+      
+      // 在新标签页中打开相机后台控制页面
+      window.open(adminURL, '_blank');
+      
+      console.log('Opening camera admin panel:', adminURL);
+    }
+
     // 将函数暴露到全局作用域，供HTML onclick事件调用
     window.selectHistoryItem = selectHistoryItem;
     window.removeHistoryItem = removeHistoryItem;
     window.clearSearchHistory = clearSearchHistory;
+    window.openCameraAdmin = openCameraAdmin;
   </script>
 </body>
 
