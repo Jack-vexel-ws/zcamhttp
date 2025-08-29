@@ -2010,7 +2010,15 @@
 
     // 检查是否是危险命令
     function isDangerousCommand(commandName) {
-      const dangerousCommands = ['reboot', 'shutdown', 'clear settings'];
+      const dangerousCommands = [
+      'reboot', 'shutdown', 
+      'clear settings', 
+      'stop record', 
+      'format storage card', 
+      'format to fat32', 
+      'format to exfat',
+      'delete file in card'
+      ];
       const commandNameLower = commandName.toLowerCase();
       
       // 检查commandName是否包含任何危险命令的key
@@ -2503,7 +2511,7 @@
     window.isDangerousCommand = isDangerousCommand;
     window.showDangerousCommandConfirm = showDangerousCommandConfirm;
     window.executeCommandInternal = executeCommandInternal;
-    window.saveIPToStorage = saveIPToStorage;
+    window.saveIPToStorage = saveIPToStorage; 
     window.loadIPFromStorage = loadIPFromStorage;
   </script>
 </body>
