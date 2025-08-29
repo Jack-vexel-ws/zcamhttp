@@ -682,8 +682,8 @@ const commands = [
   { key: "pixel link role", url: "/info", category: "multi_cam", description: "" },
 
   // ===== Power =====
-  { key: "shutdown", url: "/shutdown", category: "power", description: "" },
-  { key: "reboot", url: "/reboot", category: "power", description: "" },
+  { key: "shutdown", url: "/ctrl/shutdown", category: "power", description: "" },
+  { key: "reboot", url: "/ctrl/reboot", category: "power", description: "" },
   { key: "auto off", url: "/ctrl/get?k=auto_off", category: "power", description: "" },
   { key: "set auto off", url: "/ctrl/set?auto_off=$value", category: "power", description: "" },
   { key: "auto standby", url: "/ctrl/get?k=auto_standby", category: "power", description: "" },
