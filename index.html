@@ -1427,12 +1427,21 @@
 
     console.log("Variable check passed, starting page initialization");
 
+    // IP地址本地存储管理
+    const IP_STORAGE_KEY = 'zcamLastIP';
+    const DEFAULT_IP = '192.168.1.100';
+
     const ipInput = document.getElementById("ip-input");
     const input = document.getElementById("search");
     const results = document.getElementById("results");
     const favButtons = document.getElementById("fav-buttons");
     const responseContent = document.getElementById("response-content");
     const clearResponseBtn = document.getElementById("clear-response");
+
+    // 初始化IP地址输入框
+    const savedIP = loadIPFromStorage();
+    ipInput.value = savedIP;
+    console.log('IP input initialized with:', savedIP);
 
     // 搜索历史记录管理
     let searchHistory = JSON.parse(localStorage.getItem('zcamSearchHistory') || '[]');
@@ -1454,7 +1463,26 @@
 
     // Get current IP address
     function getCurrentIP() {
-      return ipInput.value.trim() || "192.168.1.100";
+      return ipInput.value.trim() || DEFAULT_IP;
+    }
+
+    // 保存IP地址到本地存储
+    function saveIPToStorage(ip) {
+      if (ip && ip.trim() !== '') {
+        localStorage.setItem(IP_STORAGE_KEY, ip.trim());
+        console.log('IP address saved to storage:', ip.trim());
+      }
+    }
+
+    // 从本地存储加载IP地址
+    function loadIPFromStorage() {
+      const savedIP = localStorage.getItem(IP_STORAGE_KEY);
+      if (savedIP && savedIP.trim() !== '') {
+        console.log('IP address loaded from storage:', savedIP);
+        return savedIP.trim();
+      }
+      console.log('No saved IP found, using default:', DEFAULT_IP);
+      return DEFAULT_IP;
     }
 
     // 添加搜索历史记录 - 只保存完整的HTTP URL
@@ -2257,6 +2285,12 @@
 
     // IP地址变化时重新渲染常用命令按钮
     ipInput.addEventListener("input", () => {
+      // 保存IP地址到本地存储
+      const currentIP = ipInput.value.trim();
+      if (currentIP !== '') {
+        saveIPToStorage(currentIP);
+      }
+
       renderFavorites();
       // 如果当前有搜索结果，也重新显示
       const query = input.value.trim();
@@ -2318,6 +2352,14 @@
         showSearchHistory();
       } else {
         console.log('Search input has content, not showing history');
+      }
+    });
+
+    // IP地址输入框失去焦点时保存IP地址
+    ipInput.addEventListener("blur", () => {
+      const currentIP = ipInput.value.trim();
+      if (currentIP !== '') {
+        saveIPToStorage(currentIP);
       }
     });
 
@@ -2461,6 +2503,8 @@
     window.isDangerousCommand = isDangerousCommand;
     window.showDangerousCommandConfirm = showDangerousCommandConfirm;
     window.executeCommandInternal = executeCommandInternal;
+    window.saveIPToStorage = saveIPToStorage;
+    window.loadIPFromStorage = loadIPFromStorage;
   </script>
 </body>
 
