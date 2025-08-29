@@ -258,6 +258,8 @@
       height: 20px;
     }
 
+
+
     .search-section {
       margin-bottom: 30px;
       flex: 1;
@@ -1154,6 +1156,11 @@
         ui_msg_copy_failed: "复制失败: ",
         ui_msg_parameters_required: "此命令需要填写以下参数才能执行：",
         ui_msg_parameters_instruction: "请将URL中的参数占位符替换为实际值。",
+        ui_msg_warning_command: "⚠️警告",
+        ui_msg_warning_command_desc: "您即将执行一个重要的命令：",
+        ui_msg_warning_command_confirm: "请确认是否继续？",
+        ui_msg_btn_confirm: "确认执行",
+        ui_msg_btn_cancel: "取消",
         ui_github_btn_title: "在GitHub上查看",
         ui_zcam_doc_btn_title: "查看ZCAM HTTP API文档",
         ui_camera_admin_btn_title: "打开相机后台控制",
@@ -1228,6 +1235,11 @@
         ui_msg_copy_failed: "Copy failed: ",
         ui_msg_parameters_required: "This command requires the following parameters to execute:",
         ui_msg_parameters_instruction: "Please replace the parameter placeholders in the URL with actual values.",
+        ui_msg_warning_command: "⚠️Warning",
+        ui_msg_warning_command_desc: "You are about to execute an important command:",
+        ui_msg_warning_command_confirm: "Do you want to continue?",
+        ui_msg_btn_confirm: "Confirm",
+        ui_msg_btn_cancel: "Cancel",
         ui_github_btn_title: "View on GitHub",
         ui_zcam_doc_btn_title: "View ZCAM Http API Doc",
         ui_camera_admin_btn_title: "Open Camera Admin Panel",
@@ -1966,8 +1978,47 @@
       responseContent.scrollTop = 0;
     }
 
+
+
+    // 检查是否是危险命令
+    function isDangerousCommand(commandName) {
+      const dangerousCommands = ['reboot', 'shutdown', 'clear settings'];
+      const commandNameLower = commandName.toLowerCase();
+      
+      // 检查commandName是否包含任何危险命令的key
+      return dangerousCommands.some(dangerousKey => 
+        commandNameLower.includes(dangerousKey.toLowerCase())
+      );
+    }
+
+    // 显示危险命令确认对话框
+    function showDangerousCommandConfirm(commandName, url, callback) {
+      // 使用原生confirm对话框
+      const message = `${t('ui_msg_warning_command')}\n\n${t('ui_msg_warning_command_desc')}\n${commandName}\n\n${t('ui_msg_warning_command_confirm')}`;
+      
+      const confirmed = confirm(message);
+      callback(confirmed);
+    }
+
     // 执行HTTP请求并显示响应
     async function executeCommand(url, commandName) {
+      // 检查是否是危险命令
+      if (isDangerousCommand(commandName)) {
+        showDangerousCommandConfirm(commandName, url, (confirmed) => {
+          if (confirmed) {
+            // 用户确认后执行命令
+            executeCommandInternal(url, commandName);
+          }
+        });
+        return;
+      }
+
+      // 直接执行命令
+      executeCommandInternal(url, commandName);
+    }
+
+    // 内部执行命令函数
+    async function executeCommandInternal(url, commandName) {
       // 定义超时时间（在函数顶部，确保所有代码块都能访问）
       const timeout = 30000; // 3 second timeout, can be adjusted as needed
       let loadingItem = null;
@@ -2158,11 +2209,11 @@
           input.value = cmd.url;
           input.focus();
 
-          // Select all URL text, like browser address bar
-          input.select();
+            // Select all URL text, like browser address bar
+            input.select();
 
-          // 清空搜索结果
-          results.innerHTML = "";
+            // 清空搜索结果
+            results.innerHTML = "";
 
           // 将完整URL添加到历史记录
           addSearchHistory(cmd.url);
@@ -2324,12 +2375,12 @@
             // 将完整URL添加到搜索历史
             addSearchHistory(dynamicURL);
 
-            // 将URL填入搜索框，而不是直接执行
-            input.value = dynamicURL;
-            input.focus();
+              // 将URL填入搜索框，而不是直接执行
+              input.value = dynamicURL;
+              input.focus();
 
-            // 全选URL文本，就像浏览器地址栏那样
-            input.select();
+              // 全选URL文本，就像浏览器地址栏那样
+              input.select();
 
             // 清空搜索结果
             results.innerHTML = "";
@@ -2407,6 +2458,9 @@
     window.removeHistoryItem = removeHistoryItem;
     window.clearSearchHistory = clearSearchHistory;
     window.openCameraAdmin = openCameraAdmin;
+    window.isDangerousCommand = isDangerousCommand;
+    window.showDangerousCommandConfirm = showDangerousCommandConfirm;
+    window.executeCommandInternal = executeCommandInternal;
   </script>
 </body>
 
