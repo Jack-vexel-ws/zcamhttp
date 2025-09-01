@@ -1922,7 +1922,34 @@
     }
 
     // 命令响应管理
+    // 响应历史本地存储配置
+    const RESPONSE_HISTORY_STORAGE_KEY = 'zcamResponseHistory';
+    const MAX_RESPONSE_HISTORY = 20; // 可修改上限
+
     let commandResponses = [];
+
+    // 保存响应历史到本地存储
+    function saveCommandResponsesToStorage() {
+      try {
+        const dataToSave = commandResponses.slice(0, MAX_RESPONSE_HISTORY);
+        localStorage.setItem(RESPONSE_HISTORY_STORAGE_KEY, JSON.stringify(dataToSave));
+      } catch (e) {
+        console.warn('Failed to save response history:', e);
+      }
+    }
+
+    // 从本地存储加载响应历史
+    function loadCommandResponsesFromStorage() {
+      try {
+        const raw = localStorage.getItem(RESPONSE_HISTORY_STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        console.warn('Failed to load response history:', e);
+        return [];
+      }
+    }
 
     // 添加命令响应
     function addCommandResponse(commandName, url, responseText, isSuccess, timestamp) {
@@ -1936,10 +1963,13 @@
 
       commandResponses.unshift(responseItem); // 添加到开头
 
-      // Limit response count (maximum 20 items)
-      if (commandResponses.length > 20) {
-        commandResponses = commandResponses.slice(0, 20);
+      // 限制历史数量（使用可配置上限）
+      if (commandResponses.length > MAX_RESPONSE_HISTORY) {
+        commandResponses = commandResponses.slice(0, MAX_RESPONSE_HISTORY);
       }
+
+      // 持久化到本地存储
+      saveCommandResponsesToStorage();
 
       renderCommandResponses();
     }
@@ -2007,6 +2037,13 @@
     }
 
 
+
+    // 页面初始化时加载并显示已保存的响应历史
+    const __initialResponses = loadCommandResponsesFromStorage();
+    if (Array.isArray(__initialResponses) && __initialResponses.length > 0) {
+      commandResponses = __initialResponses.slice(0, MAX_RESPONSE_HISTORY);
+      renderCommandResponses();
+    }
 
     // 检查是否是危险命令
     function isDangerousCommand(commandName) {
@@ -2287,6 +2324,8 @@
     clearResponseBtn.addEventListener("click", () => {
       commandResponses = [];
       responseContent.innerHTML = `<div class="no-response">${t('ui_no_response')}</div>`;
+      // 清空本地存储的响应历史
+      localStorage.removeItem(RESPONSE_HISTORY_STORAGE_KEY);
     });
 
 
