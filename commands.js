@@ -29,6 +29,7 @@ const commandDescriptions = {
     "start record": "开始录制",
     "stop record": "停止录制",
     "get record status": "获取录制状态",
+    "get recording duration": "获取录制时长",
     "remain recording time": "查询剩余录制时间",
     "repair status": "获取修复状态",
     "set record meta": "设置录制元数据",
@@ -198,6 +199,7 @@ const commandDescriptions = {
     "set visca id": "设置VISCA ID",
     "set visca baudrate": "设置VISCA波特率",
     "enable visca": "启用VISCA",
+    "get send stream info": "获取拉流源信息",
     "send stream0": "切换拉流源到Stream0",
     "send stream1": "切换拉流源到Stream1",
     "stream0 settings": "查询stream0设置",
@@ -215,7 +217,8 @@ const commandDescriptions = {
     "query rtsp": "查询RTSP",
     "query ndi": "查询NDI",
     "query srt": "查询SRT",
-    "restore lens pos": "恢复镜头位置",
+    "disable restore lens pos": "禁用恢复镜头位置",
+    "enable restore lens pos": "启用恢复镜头位置",
     "get lens information": "获取镜头信息",
     "get lens focal length": "获取镜头焦距",
     "lens focus near": "对焦近",
@@ -328,6 +331,7 @@ const commandDescriptions = {
     "start record": "Start recording",
     "stop record": "Stop recording",
     "get record status": "Get record status",
+    "get recording duration": "Get recording duration",
     "remain recording time": "Query remaining recording time",
     "repair status": "repair status",
     "set record meta": "Set record metadata",
@@ -497,6 +501,7 @@ const commandDescriptions = {
     "set visca id": "Set VISCA ID",
     "set visca baudrate": "Set VISCA baudrate",
     "enable visca": "Enable VISCA",
+    "get send stream info": "Get send stream info",
     "send stream0": "Send stream source to Stream0",
     "send stream1": "Send stream source to Stream1",
     "stream0 settings": "Query stream0 settings",
@@ -514,7 +519,8 @@ const commandDescriptions = {
     "query rtsp": "Query RTSP",
     "query ndi": "Query NDI",
     "query srt": "Query SRT",
-    "restore lens pos": "Restore lens position",
+    "disable restore lens pos": "Disable restore lens position",
+    "enable restore lens pos": "Enable restore lens position",
     "get lens information": "Get lens information",
     "get lens focal length": "Get lens focal length",
     "lens focus near": "Focus near",
@@ -646,6 +652,7 @@ const commands = [
   { key: "start record", url: "/ctrl/rec?action=start", category: "record", description: "" },
   { key: "stop record", url: "/ctrl/rec?action=stop", category: "record", description: "" },
   { key: "get record status", url: "/ctrl/rec?action=query", category: "record", description: "" },
+  { key: "get recording duration", url: "/ctrl/get?k=rec_duration", category: "record", description: "" },
   { key: "remain recording time", url: "/ctrl/rec?action=remain", category: "record", description: "" },
   { key: "repair status", url: "/ctrl/rec?action=query_repairing", category: "record", description: "" },
   { key: "set record meta", url: "/ctrl/set?record_meta=$value", category: "record", description: "" },
@@ -677,8 +684,8 @@ const commands = [
   { key: "multiple cam mode", url: "/ctrl/get?k=multiple_mode", category: "multi_cam", description: "" },
   { key: "union auto exposure", url: "/ctrl/get?k=union_ae", category: "multi_cam", description: "" },
   { key: "union auto white balance", url: "/ctrl/get?k=union_awb", category: "multi_cam", description: "" },
-  { key: "ezlink mode", url: "/ctrl/get?ezlink_mode", category: "multi_cam", description: "" },
-  { key: "ezlink trigger", url: "/ctrl/get?ezlink_trigger", category: "multi_cam", description: "" },
+  { key: "ezlink mode", url: "/ctrl/get?k=ezlink_mode", category: "multi_cam", description: "" },
+  { key: "ezlink trigger", url: "/ctrl/get?k=ezlink_trigger", category: "multi_cam", description: "" },
   { key: "pixel link role", url: "/info", category: "multi_cam", description: "" },
 
   // ===== Power =====
@@ -856,6 +863,7 @@ const commands = [
   { key: "enable visca", url: "/ctrl/set?visca_enable=$value", category: "connection", description: "" },
 
   // ===== Streaming =====
+  { key: "get send stream info", url: "/ctrl/get?k=send_stream", category: "streaming", description: "" },
   { key: "send stream0", url: "/ctrl/set?send_stream=Stream0", category: "streaming", description: "" },
   { key: "send stream1", url: "/ctrl/set?send_stream=Stream1", category: "streaming", description: "" },
   { key: "stream0 settings", url: "/ctrl/stream_setting?index=stream0&action=query", category: "streaming", description: "" },
@@ -875,7 +883,8 @@ const commands = [
   { key: "query srt", url: "/ctrl/srt?action=query", category: "streaming", description: "" },
 
   // ===== Lens Control =====
-  { key: "restore lens pos", url: "/ctrl/set?restore_lens_pos=Disable/Enable", category: "lens", description: "" },
+  { key: "disable restore lens pos", url: "/ctrl/set?restore_lens_pos=Disable", category: "lens", description: "" },
+  { key: "enable restore lens pos", url: "/ctrl/set?restore_lens_pos=Enable", category: "lens", description: "" },
   { key: "get lens information", url: "/ctrl/lens?action=query", category: "lens", description: "" },
   { key: "get lens focal length", url: "/ctrl/get?k=lens_focal_length", category: "lens", description: "" },
 

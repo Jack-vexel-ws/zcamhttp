@@ -1798,53 +1798,9 @@
           return `${exactMatch.key} - ${description}`;
         }
 
-        // If no exact match, try to find similar URL (ignore query parameters)
-        const relativePathWithoutQuery = relativePath.split('?')[0];
-        const similarMatch = commands.find(cmd => {
-          const cmdUrlWithoutQuery = cmd.url.split('?')[0];
-          return cmdUrlWithoutQuery === relativePathWithoutQuery;
-        });
-
-        if (similarMatch) {
-          console.log('Found similar match command:', similarMatch.key);
-          const description = similarMatch.description;
-          return `${similarMatch.key} - ${description}`;
-        }
-
-        // If none found, use previous extraction logic
-        console.log('No matching command found, using default extraction logic');
-
-        // Try to extract command name from URL path
-        const urlObj = new URL(url);
-        const pathname = urlObj.pathname;
-        const search = urlObj.search;
-
-        // If there are query parameters (containing equals sign)
-        if (search && search.includes('=')) {
-          // 提取所有等号后面的值
-          const params = new URLSearchParams(search);
-          const values = [];
-
-          for (const [key, value] of params) {
-            if (value && value.trim() !== '') {
-              values.push(value.trim());
-            }
-          }
-
-          // 如果有值，返回用空格连接的结果
-          if (values.length > 0) {
-            return values.join(' ');
-          }
-        }
-
-        // If no query parameters or query parameters are empty, take characters after last slash
-        const pathParts = pathname.split('/').filter(part => part);
-        if (pathParts.length > 0) {
-          return pathParts[pathParts.length - 1];
-        }
-
-        // If no path, return hostname
-        return urlObj.hostname;
+        // If none found, return unknown command
+        console.log('No matching command found, returning unknown command');
+        return '';
 
       } catch (e) {
         // If URL parsing fails, try simple string processing
@@ -1871,42 +1827,10 @@
             return `${exactMatch.key} - ${description}`;
           }
 
-          // 检查是否有查询参数（包含等号）
-          if (cleanUrl.includes('=')) {
-            // 分割路径和查询参数
-            const [pathPart, queryPart] = cleanUrl.split('?');
-
-            if (queryPart && queryPart.includes('=')) {
-              // Extract all values after equals sign
-              const values = [];
-              const params = queryPart.split('&');
-
-              for (const param of params) {
-                if (param.includes('=')) {
-                  const [, value] = param.split('=');
-                  if (value && value.trim() !== '') {
-                    values.push(value.trim());
-                  }
-                }
-              }
-
-              // If there are values, return space-separated result
-              if (values.length > 0) {
-                return values.join(' ');
-              }
-            }
-          }
-
-          // 如果没有查询参数或查询参数为空，分割路径
-          const pathParts = cleanUrl.split('?')[0].split('/').filter(part => part);
-
-          if (pathParts.length > 0) {
-            return pathParts[pathParts.length - 1];
-          }
-
-          return 'Custom Command';
+          // 如果找不到匹配的命令，返回空
+          return '';
         } catch (fallbackError) {
-          return 'Custom Command';
+          return '';
         }
       }
     }
