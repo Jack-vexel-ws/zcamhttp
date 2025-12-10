@@ -4,7 +4,12 @@
 // 多语言描述映射表
 const commandDescriptions = {
   zh: {
-    "camera info": "得到相机信息",
+    "center mark": "获取辅助工具中心标记",
+    "center mark on": "打开辅助工具中心标记",
+    "center mark off": "关闭辅助工具中心标记",
+    "center mark color": "获取辅助工具中心标记颜色",
+    "center mark color red": "设置辅助工具中心标记颜色为红色",
+    "camera info": "获取相机信息",
     "camera sn": "获取相机序列号",
     "commit info": "获取提交信息",
     "nick name": "获取昵称",
@@ -128,7 +133,9 @@ const commandDescriptions = {
     "auto white balance priority": "获取自动白平衡优先级",
     "lock awb in recording": "获取录制时锁定自动白平衡",
     "ev": "获取曝光值",
-    "flicker": "获取闪烁设置",
+    "flicker reduction": "获取消除闪烁设置",
+    "flicker reduction 50Hz": "设置消除闪烁为50Hz",
+    "flicker reduction 60Hz": "设置消除闪烁为60Hz",
     "meter mode": "获取测光模式",
     "iris aperture": "获取光圈值",
     "iso options": "获取ISO选项",
@@ -310,6 +317,11 @@ const commandDescriptions = {
   },
   
   en: {
+    "center mark": "Get assistant tool center mark",
+    "center mark on": "Open assistant tool center mark",
+    "center mark off": "Close assistant tool center mark",
+    "center mark color": "Get assistant tool center mark color",
+    "center mark color red": "Set assistant tool center mark color to red",
     "camera info": "Get camera information",
     "camera sn": "Get camera serial number",
     "commit info": "Get commit information",
@@ -434,7 +446,9 @@ const commandDescriptions = {
     "auto white balance priority": "Get auto white balance priority",
     "lock awb in recording": "Get lock AWB in recording",
     "ev": "Get exposure value",
-    "flicker": "Get flicker settings",
+    "flicker reduction": "Get flicker reduction settings",
+    "flicker reduction 50Hz": "Set flicker reduction to 50Hz",
+    "flicker reduction 60Hz": "Set flicker reduction to 60Hz",
     "meter mode": "Get meter mode",
     "iris aperture": "Get iris aperture",
     "iso options": "Get ISO options",
@@ -630,6 +644,13 @@ function getCurrentCommandDescription(key) {
 }
 
 const commands = [
+  // ===== Camera assistant tools =====
+  { key: "center mark", url: "ctrl/get?k=assitool_center_mark", category: "assistant_tools", description: "" },
+  { key: "center mark on", url: "ctrl/set?assitool_center_mark=On", category: "assistant_tools", description: "" },
+  { key: "center mark off", url: "ctrl/set?assitool_center_mark=Off", category: "assistant_tools", description: "" },
+  { key: "center mark color", url: "ctrl/get?k=assitool_center_mark_color", category: "assistant_tools", description: "" },
+  { key: "center mark color red", url: "ctrl/set?assitool_center_mark_color=Red", category: "assistant_tools", description: "" },
+
   // ===== Camera Utility =====
   { key: "camera info", url: "/info", category: "utility", description: "" },
   { key: "camera sn", url: "/ctrl/get?k=sn", category: "utility", description: "" },
@@ -749,7 +770,7 @@ const commands = [
   { key: "batch get security settings", url: "/ctrl/getbatch?catalog=security", category: "batch_query", description: "" },
   { key: "batch get system settings", url: "/ctrl/getbatch?catalog=system", category: "batch_query", description: "" },
   { key: "batch get maintenance settings", url: "/ctrl/getbatch?catalog=maintanence", category: "batch_query", description: "" },
-
+  
   // ===== Video Settings =====
   { key: "video encoder", url: "/ctrl/get?k=video_encoder", category: "video", description: "" },
   { key: "mov format", url: "/ctrl/get?k=movfmt", category: "video", description: "" },
@@ -786,7 +807,9 @@ const commands = [
 
   // ===== Exposure Settings =====
   { key: "ev", url: "/ctrl/get?k=ev", category: "exposure", description: "" },
-  { key: "flicker", url: "/ctrl/get?k=flicker", category: "exposure", description: "" },
+  { key: "flicker reduction", url: "/ctrl/get?k=flicker", category: "exposure", description: "" },
+  { key: "flicker reduction 50Hz", url: "/ctrl/set?flicker=50Hz", category: "exposure", description: "" },
+  { key: "flicker reduction 60Hz", url: "/ctrl/set?flicker=60Hz", category: "exposure", description: "" },
   { key: "meter mode", url: "/ctrl/get?k=meter_mode", category: "exposure", description: "" },
   { key: "iris aperture", url: "/ctrl/get?k=iris", category: "exposure", description: "" },
   { key: "iris aperture2", url: "/ctrl/get?k=live_ae_fno", category: "exposure", description: "" },
