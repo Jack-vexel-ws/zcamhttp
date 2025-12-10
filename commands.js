@@ -4,7 +4,7 @@
 // 多语言描述映射表
 const commandDescriptions = {
   zh: {
-    "camera info": "获取相机信息",
+    "camera info": "得到相机信息",
     "camera sn": "获取相机序列号",
     "commit info": "获取提交信息",
     "nick name": "获取昵称",
@@ -107,6 +107,7 @@ const commandDescriptions = {
     "video rotation": "获取视频旋转",
     "video timelapse interval": "获取视频延时摄影间隔",
     "low jello": "获取低果冻效果",
+    "crop sensor": "裁剪传感器",
     "audio encoder": "获取音频编码器",
     "audio source": "获取音频源",
     "audio phantom power": "获取音频幻象电源",
@@ -412,6 +413,7 @@ const commandDescriptions = {
     "video rotation": "Get video rotation",
     "video timelapse interval": "Get video timelapse interval",
     "low jello": "Get low jello effect",
+    "crop sensor": "Get crop sensor",
     "audio encoder": "Get audio encoder",
     "audio source": "Get audio source",
     "audio phantom power": "Get audio phantom power",
@@ -757,6 +759,7 @@ const commands = [
   { key: "video rotation", url: "/ctrl/get?k=vid_rot", category: "video", description: "" },
   { key: "video timelapse interval", url: "/ctrl/get?k=video_tl_interval", category: "video", description: "" },
   { key: "low jello", url: "/ctrl/get?k=low_jello", category: "video", description: "" },
+  { key: "crop sensor", url: "/ctrl/get?k=crop_sensor", category: "video", description: "" },
 
   // ===== Audio Settings =====
   { key: "audio encoder", url: "/ctrl/get?k=primary_audio", category: "audio", description: "" },
