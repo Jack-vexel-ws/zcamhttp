@@ -54,7 +54,7 @@
     .main-container {
       display: flex;
       gap: 20px;
-      max-width: 1400px;
+      max-width: 1610px;
       margin: 20px auto;
       min-height: calc(100vh - 40px);
       align-items: stretch;
@@ -64,7 +64,7 @@
       flex: 1;
       background: var(--bg-secondary);
       border-radius: 8px;
-      padding: 30px;
+      padding: 20px 30px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
       display: flex;
       flex-direction: column;
@@ -90,7 +90,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 30px;
+      margin-bottom: 16px;
     }
 
     .title-section h1 {
@@ -168,6 +168,48 @@
       filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(1) contrast(1);
     }
 
+    /* 语言切换器 */
+    .language-switcher {
+      display: flex;
+      align-items: center;
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      padding: 2px;
+      gap: 2px;
+      height: 40px;
+      box-sizing: border-box;
+    }
+
+    .lang-btn {
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 30px;
+      height: 36px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lang-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .lang-btn.active {
+      background: var(--accent-color);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 122, 204, 0.3);
+    }
+
     h1 {
       font-size: 28px;
       margin-bottom: 30px;
@@ -186,12 +228,13 @@
     }
 
     .ip-section {
-      margin-bottom: 20px;
-      padding: 20px;
-      background: var(--bg-tertiary);
+      margin-bottom: 12px;
+      padding: 0;
+      background: var(--bg-secondary);
       border-radius: 6px;
       border: 1px solid var(--border-color);
       flex-shrink: 0;
+      overflow: hidden;
     }
 
     .ip-section label {
@@ -204,7 +247,7 @@
 
     .ip-input-container {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 8px;
     }
 
@@ -258,7 +301,352 @@
       height: 20px;
     }
 
+    /* IP模式选择器样式 - 标签页 */
+    .ip-mode-selector {
+      display: flex;
+      gap: 0;
+      margin-bottom: 0;
+      border-bottom: 2px solid var(--border-color);
+      background: var(--bg-tertiary);
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+    }
 
+    .ip-mode-tab {
+      flex: 1;
+      padding: 8px 16px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-primary);
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      outline: none;
+      position: relative;
+      top: 0;
+    }
+
+    .ip-mode-tab:hover {
+      background: var(--bg-hover);
+      color: var(--text-secondary);
+    }
+
+    .ip-mode-tab.active {
+      background: var(--bg-secondary);
+      color: var(--accent-color);
+      border-bottom-color: var(--accent-color);
+      font-weight: 600;
+    }
+
+    .ip-mode-tab:first-child {
+      border-top-left-radius: 6px;
+    }
+
+    .ip-mode-tab:last-child {
+      border-top-right-radius: 6px;
+    }
+
+    .ip-mode-container {
+      margin-top: 0;
+      padding: 12px 16px;
+      background: var(--bg-secondary);
+      border-bottom-left-radius: 6px;
+      border-bottom-right-radius: 6px;
+      min-height: 100px; /* 统一最小高度，确保所有面板高度一致 */
+    }
+
+    .ip-mode-container label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .ip-mode-container input {
+      width: 100%;
+      margin-bottom: 0; /* 移除底部margin，统一高度 */
+    }
+
+    /* 连续IP模式：并排布局 */
+    .ip-mode-container[data-mode="continuous"] .ip-input-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .ip-mode-container[data-mode="continuous"] .ip-input-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ip-mode-container[data-mode="continuous"] .ip-input-group label {
+      margin-bottom: 6px;
+    }
+
+    .ip-mode-container[data-mode="continuous"] .ip-input-group input {
+      width: 100%;
+      margin-bottom: 0;
+    }
+
+    /* 刷新间隔输入框包装器（用于结束IP输入框） */
+    .refresh-interval-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .refresh-interval-input {
+      width: 100%;
+      padding: 6px 24px 6px 8px;
+      font-size: 12px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 6px;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      text-align: center;
+      outline: none;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      appearance: textfield; /* 标准属性，隐藏spinner */
+      -moz-appearance: textfield; /* Firefox隐藏spinner */
+    }
+
+    /* 隐藏Chrome/Safari/Edge的spinner */
+    .refresh-interval-input::-webkit-outer-spin-button,
+    .refresh-interval-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .refresh-interval-input:focus {
+      border-color: var(--accent-color);
+      background: var(--bg-secondary);
+      box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.15);
+    }
+
+    .refresh-interval-input:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: var(--bg-secondary);
+      border-color: var(--border-color);
+    }
+
+    .refresh-interval-input:hover:not(:disabled) {
+      border-color: var(--accent-color);
+    }
+
+    /* 自定义上下箭头按钮 */
+    .refresh-interval-controls {
+      position: absolute;
+      right: 2px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      pointer-events: none;
+    }
+
+    .refresh-interval-btn {
+      width: 18px;
+      height: 11px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      transition: all 0.15s ease;
+      border-radius: 2px;
+    }
+
+    .refresh-interval-btn:hover:not(:disabled) {
+      background: var(--bg-hover);
+    }
+
+    .refresh-interval-btn:active:not(:disabled) {
+      background: var(--accent-color);
+    }
+
+    .refresh-interval-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .refresh-interval-btn svg {
+      width: 10px;
+      height: 10px;
+      fill: var(--text-secondary);
+      transition: fill 0.15s ease;
+    }
+
+    .refresh-interval-btn:hover:not(:disabled) svg {
+      fill: var(--accent-color);
+    }
+
+    .refresh-interval-btn:active:not(:disabled) svg {
+      fill: white;
+    }
+
+    .ip-format-hint {
+      display: none; /* 隐藏提示字符 */
+    }
+
+    /* IP输入提示tooltip */
+    .ip-tooltip {
+      cursor: help;
+      position: relative;
+    }
+
+    /* 动态tooltip容器 */
+    .ip-tooltip-popup {
+      position: fixed;
+      padding: 8px 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 12px;
+      white-space: pre-line; /* 支持换行符换行 */
+      width: max-content;
+      max-width: 90vw;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 10000;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .ip-tooltip-popup.show {
+      display: block;
+      opacity: 1;
+    }
+
+    /* 汇总响应项样式 */
+    .response-summary {
+      border-left: 4px solid var(--accent-color);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .response-summary:hover {
+      background: var(--bg-hover);
+    }
+
+    .response-summary-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .response-summary-stats {
+      display: flex;
+      gap: 15px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .response-summary-stat {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .response-summary-stat.success {
+      color: var(--success-color);
+    }
+
+    .response-summary-stat.error {
+      color: #ff6b6b;
+    }
+
+    .response-summary-expand {
+      font-size: 12px;
+      color: var(--accent-color);
+      transition: transform 0.2s ease;
+    }
+
+    .response-summary.expanded .response-summary-expand {
+      transform: rotate(90deg);
+    }
+
+    .response-details {
+      display: none;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .response-summary.expanded .response-details {
+      display: block;
+    }
+
+    .response-ip-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      margin-right: 8px;
+    }
+
+    .response-detail-item {
+      margin-bottom: 12px;
+      padding: 12px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      border-left: 3px solid var(--border-color);
+    }
+
+    .response-detail-item.success {
+      border-left-color: var(--success-color);
+    }
+
+    .response-detail-item.error {
+      border-left-color: #ff6b6b;
+    }
+
+    .response-detail-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .response-detail-ip {
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .response-detail-status {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .response-detail-status.success {
+      background: rgba(78, 201, 176, 0.2);
+      color: var(--success-color);
+    }
+
+    .response-detail-status.error {
+      background: rgba(255, 107, 107, 0.2);
+      color: #ff6b6b;
+    }
 
     .search-section {
       margin-bottom: 30px;
@@ -266,12 +654,21 @@
       display: flex;
       flex-direction: column;
       min-height: 0;
-      overflow: visible;
-      /* 允许历史记录面板溢出显示 */
+      overflow: hidden;
+      /* 改为hidden，防止历史记录面板溢出覆盖常用命令区域 */
+      position: relative;
+      /* 添加相对定位，为子元素提供定位上下文 */
+    }
+
+    .search-input-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 0;
     }
 
     input {
-      width: 100%;
+      flex: 1;
       padding: 12px 16px;
       font-size: 16px;
       border: 2px solid var(--border-color);
@@ -281,6 +678,16 @@
       transition: all 0.2s ease;
       outline: none;
       flex-shrink: 0;
+      box-sizing: border-box;
+    }
+
+    /* 搜索输入框样式 - 与执行按钮高度一致 */
+    #search {
+      height: 36px;
+      padding: 0 16px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
     }
 
     input:focus {
@@ -327,13 +734,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 16px;
+      padding: 8px 12px;
       border: 1px solid var(--border-color);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       background: var(--bg-tertiary);
       border-radius: 6px;
       transition: all 0.2s ease;
       flex-shrink: 0;
+      min-height: 52px; /* 确保有足够空间显示2行内容 */
     }
 
     li:hover {
@@ -343,54 +751,58 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
-    li span {
+    /* 命令内容区域 - 支持2行显示 */
+    .command-content {
       cursor: pointer;
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0; /* 允许文本截断 */
+      justify-content: center; /* 垂直居中 */
+    }
+
+    /* 命令描述（第一行） */
+    .command-description {
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* 命令路径（第二行） */
+    .command-url {
       color: var(--text-primary);
       font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-      font-size: 14px;
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    li span:hover {
+    /* 复制按钮 - 图标样式 */
+    .copy-btn-icon {
+      background: none;
+      border: none;
       color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      opacity: 0.7;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .copy-btn {
-      margin-left: 12px;
-      padding: 6px 12px;
-      border: 1px solid var(--accent-color);
-      background: var(--bg-tertiary);
+    .copy-btn-icon:hover {
+      background: rgba(0, 122, 204, 0.2);
       color: var(--accent-color);
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-    }
-
-    .copy-btn:hover {
-      background: var(--accent-color);
-      color: white;
-      transform: translateY(-1px);
-    }
-
-    .open-btn {
-      margin-left: 8px;
-      padding: 6px 12px;
-      border: 1px solid var(--success-color);
-      background: var(--bg-tertiary);
-      color: var(--success-color);
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-    }
-
-    .open-btn:hover {
-      background: var(--success-color);
-      color: #000;
-      transform: translateY(-1px);
+      opacity: 1;
     }
 
     .favorites {
@@ -398,6 +810,11 @@
       padding-top: 20px;
       border-top: 1px solid var(--border-color);
       flex-shrink: 0;
+      position: relative;
+      z-index: 1001;
+      /* 确保常用命令区域在历史记录面板之上 */
+      background: var(--bg-secondary);
+      /* 添加背景色，确保完全覆盖下方的元素 */
     }
 
     #fav-buttons {
@@ -409,23 +826,94 @@
 
     .favorites button {
       margin: 0;
-      padding: 10px 18px;
+      padding: 0 18px;
+      height: 36px;
       font-size: 14px;
-      border: 2px solid var(--accent-color);
-      background: var(--bg-tertiary);
-      color: var(--accent-color);
+      border: none;
+      background: #2d3a4a;
+      color: #e8f4f8;
       border-radius: 6px;
       cursor: pointer;
       font-weight: 500;
       transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       flex-shrink: 0;
     }
 
     .favorites button:hover {
-      background: var(--accent-color);
+      background: #3a4f66;
       color: white;
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 122, 204, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 122, 204, 0.4);
+    }
+
+    .favorites button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* 执行按钮样式 - 与 multi-camera-index.html 保持一致 */
+    .action-btn {
+      padding: 0 18px;
+      height: 36px;
+      font-size: 14px;
+      border: none;
+      background: #2d3a4a;
+      color: #e8f4f8;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      flex-shrink: 0;
+    }
+
+    .action-btn:hover {
+      background: #3a4f66;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 122, 204, 0.4);
+    }
+
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* 执行按钮特殊样式 - 使用深绿色系配色，宽度自适应内容 */
+    .action-btn-execute {
+      flex: 0 0 auto; /* 不自动伸缩 */
+      min-width: auto; /* 宽度自适应内容 */
+      padding: 0 16px; /* 适当的内边距，确保按钮不会太窄 */
+      background: #2d8659;
+      color: white;
+      border-color: #2d8659;
+      font-weight: 600;
+    }
+
+    .action-btn-execute:hover {
+      background: #3a9d73;
+      border-color: #3a9d73;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(45, 134, 89, 0.4);
+    }
+
+    .action-btn-execute:disabled {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border-color: var(--border-color);
+      opacity: 0.5;
     }
 
     .no-results {
@@ -919,7 +1407,7 @@
       background: var(--accent-color);
     }
 
-    /* 搜索历史记录样式 */
+    /* 搜索历史记录样式 - 参考 .results-container 的实现 */
     .search-history-container {
       position: relative;
       background: var(--bg-secondary);
@@ -928,35 +1416,35 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
       z-index: 1000;
       margin-top: 5px;
-      margin-bottom: 15px;
-      overflow: visible;
-      /* 改为visible，确保内容不被截断 */
-      height: auto;
-      min-height: 300px;
-      /* 设置最小高度，确保容器有足够空间 */
-      max-height: 400px;
-      /* 设置最大高度限制 */
-      /* 确保宽度变化时布局稳定 */
+      margin-bottom: 10px;
+      /* 减少底部margin，更充分利用空间 */
+      /* 使用与 .results-container 相同的布局方式 */
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      /* 关键：外层容器 overflow: hidden */
+      /* 不使用 flex: 1，因为会与 .results-container 竞争空间 */
+      /* 高度由 JavaScript 根据可用空间动态设置 */
       min-width: 200px;
       width: 100%;
       box-sizing: border-box;
-      /* 强制显示所有内容 */
-      display: block;
     }
 
     .search-history-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 16px;
+      padding: 8px 12px;
       border-bottom: 1px solid var(--border-color);
       background: var(--bg-tertiary);
+      flex-shrink: 0;
+      /* 关键：header不参与flex伸缩，保持固定高度 */
     }
 
     .search-history-header span {
       color: var(--text-secondary);
       font-weight: 500;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .search-history-header .clear-history-btn {
@@ -964,8 +1452,8 @@
       border: none;
       color: var(--warning-color);
       cursor: pointer;
-      font-size: 16px;
-      padding: 4px;
+      font-size: 14px;
+      padding: 2px;
       border-radius: 4px;
       transition: all 0.2s ease;
     }
@@ -976,36 +1464,28 @@
     }
 
     .search-history-list {
-      max-height: 250px;
-      /* 改为max-height，允许自适应 */
+      /* 使用与 ul (搜索结果列表) 完全相同的滚动实现 */
+      flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
+      min-height: 0;
+      /* 关键：min-height: 0 允许flex子元素缩小 */
+      max-height: none;
+      /* 不设置max-height，由flex布局自动控制 */
       padding-right: 8px;
       /* 为滚动条预留空间 */
-      /* 强制显示滚动条轨道，即使内容不需要滚动 */
-      scrollbar-width: thin;
-      /* Firefox */
-      scrollbar-color: var(--border-color) var(--bg-tertiary);
-      /* Firefox */
-      /* 确保内容能正确显示 */
-      min-height: 200px;
-      /* 设置最小高度 */
-      /* 确保宽度变化时布局稳定 */
       width: 100%;
       box-sizing: border-box;
-      /* 防止文本换行影响高度计算 */
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      /* 强制显示内容 */
-      display: block;
-      height: auto;
+      /* 滚动条样式 - Firefox */
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-color) var(--bg-tertiary);
     }
 
     .search-history-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 12px;
+      padding: 6px 12px;
       cursor: pointer;
       transition: all 0.2s ease;
       border-bottom: 1px solid var(--border-color);
@@ -1013,7 +1493,7 @@
       width: 100%;
       box-sizing: border-box;
       /* 防止文本换行影响高度 */
-      min-height: 46px;
+      min-height: 36px;
       flex-shrink: 0;
     }
 
@@ -1027,7 +1507,7 @@
 
     .search-history-item .history-text {
       color: var(--text-primary);
-      font-size: 14px;
+      font-size: 13px;
       flex: 1;
       /* 防止文本换行影响高度计算 */
       white-space: nowrap;
@@ -1041,8 +1521,8 @@
       border: none;
       color: var(--text-secondary);
       cursor: pointer;
-      font-size: 18px;
-      padding: 4px 8px;
+      font-size: 16px;
+      padding: 2px 6px;
       border-radius: 4px;
       transition: all 0.2s ease;
       opacity: 0.7;
@@ -1130,6 +1610,12 @@
         // UI界面文本
         ui_title: "📷 ZCAM Camera Http Commands",
         ui_iplabel: "🌐 目标IP地址:",
+        ui_ip_discrete_label: "IP地址范围:",
+        ui_ip_mode_single: "单目标IP",
+        ui_ip_mode_continuous: "连续IP",
+        ui_ip_mode_discrete: "离散IP",
+        ui_ip_start_label: "起始IP地址:",
+        ui_ip_end_label: "结束IP（第4段数字）:",
         ui_ip_placeholder: "192.168.1.100",
         ui_search_placeholder: "输入关键字搜索命令，或'?' 列出所有命令",
         ui_favorites_title: "🚀 常用命令",
@@ -1140,6 +1626,7 @@
         // 按钮文本
         ui_btn_copy: "复制",
         ui_btn_open: "打开",
+        ui_btn_execute: "执行",
         ui_btn_executing: "执行中...",
 
         // 搜索历史相关
@@ -1159,7 +1646,11 @@
         ui_msg_warning_command: "⚠️警告",
         ui_msg_warning_command_desc: "您即将执行一个重要的命令：",
         ui_msg_warning_command_confirm: "请确认是否继续？",
+        ui_msg_warning_command_multi_camera: "将影响 {count} 台相机",
+        ui_msg_executing_multi_ip: "正在执行 {count} 个IP地址...",
+        ui_msg_executing_multi_camera: "({count} 台相机)",
         ui_msg_btn_confirm: "确认执行",
+        ui_error_no_valid_ip: "未找到有效的IP地址，请检查IP配置",
         ui_msg_btn_cancel: "取消",
         ui_github_btn_title: "在GitHub上查看",
         ui_zcam_doc_btn_title: "查看ZCAM HTTP API文档",
@@ -1177,6 +1668,7 @@
         // 其他文本
         ui_custom_command: "Custom Command",
         ui_copy_url_tooltip: "复制链接地址",
+        ui_ip_hint_tip: "IP地址范围支持的格式\n1：起始IP - 终止IP的第4位数，比如 192.168.1.2 - 100\n2：完整独立的IP，比如 192.168.2.2, 192.168.2.116\n3：仅IP的第4位数，自动使用前一个IP的前3段，比如 192.168.2.100,112,130\n使用半角/全角逗号,或分号;或反斜杠/分隔这些输入的IP",
 
         // 调试信息
         debug_language_detected: "检测到语言",
@@ -1209,6 +1701,12 @@
         // UI Interface Text
         ui_title: "📷 ZCAM Camera Http Commands",
         ui_iplabel: "🌐 Target IP Address:",
+        ui_ip_discrete_label: "IP Address Range:",
+        ui_ip_mode_single: "Single IP",
+        ui_ip_mode_continuous: "Continuous IP",
+        ui_ip_mode_discrete: "Discrete IP",
+        ui_ip_start_label: "Start IP Address:",
+        ui_ip_end_label: "End IP (4th Segment):",
         ui_ip_placeholder: "192.168.1.100",
         ui_search_placeholder: "Enter keywords to search commands, or '?' to list all commands",
         ui_favorites_title: "🚀 Favorite Commands",
@@ -1219,6 +1717,7 @@
         // Button Text
         ui_btn_copy: "Copy",
         ui_btn_open: "Open",
+        ui_btn_execute: "Execute",
         ui_btn_executing: "Executing...",
 
         // Search History Related
@@ -1238,7 +1737,11 @@
         ui_msg_warning_command: "⚠️Warning",
         ui_msg_warning_command_desc: "You are about to execute an important command:",
         ui_msg_warning_command_confirm: "Do you want to continue?",
+        ui_msg_warning_command_multi_camera: "Will affect {count} cameras",
+        ui_msg_executing_multi_ip: "Executing {count} IP addresses...",
+        ui_msg_executing_multi_camera: "({count} cameras)",
         ui_msg_btn_confirm: "Confirm",
+        ui_error_no_valid_ip: "No valid IP address found, please check IP configuration",
         ui_msg_btn_cancel: "Cancel",
         ui_github_btn_title: "View on GitHub",
         ui_zcam_doc_btn_title: "View ZCAM Http API Doc",
@@ -1256,6 +1759,7 @@
         // Other Text
         ui_custom_command: "Custom Command",
         ui_copy_url_tooltip: "Copy link address",
+        ui_ip_hint_tip: "Supported IP address range formats:\n1: Start IP - End IP 4th segment, e.g. 192.168.1.2 - 100\n2: Complete independent IPs, e.g. 192.168.2.2, 192.168.2.116\n3: Only 4th segment, automatically uses the first 3 segments of the previous IP, e.g. 192.168.2.100,112,130\nUse comma, semicolon, or slash to separate these IP inputs",
 
         // Debug Information
         debug_language_detected: "Language detected",
@@ -1285,10 +1789,19 @@
       }
     };
 
-    // 语言检测和设置
-    function detectLanguage() {
+    // 获取浏览器语言
+    function getBrowserLanguage() {
       const browserLang = navigator.language || navigator.userLanguage;
-      const langCode = browserLang.toLowerCase().startsWith('zh') ? 'zh' : 'en';
+      return browserLang.toLowerCase().startsWith('zh') ? 'zh' : 'en';
+    }
+
+    // 语言检测和设置（支持localStorage）
+    function detectLanguage() {
+      // 优先从localStorage读取，如果没有则使用浏览器语言
+      let langCode = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+      if (!langCode || (langCode !== 'zh' && langCode !== 'en')) {
+        langCode = getBrowserLanguage();
+      }
 
       // 设置HTML lang属性
       document.documentElement.lang = langCode;
@@ -1341,6 +1854,71 @@
           element.title = t(key);
         }
       });
+
+      // 更新IP输入tooltip文本
+      const ipLabel = document.querySelector('label[for="ip-input-discrete"]');
+      if (ipLabel) {
+        ipLabel.setAttribute('data-tooltip', t('ui_ip_hint_tip'));
+      }
+    }
+
+    // 更新语言按钮状态
+    function updateLanguageButtons(lang) {
+      const langButtons = document.querySelectorAll('.lang-btn');
+      langButtons.forEach(btn => {
+        if (btn.dataset.lang === lang) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    // 切换语言
+    function switchLanguage(lang) {
+      if (lang !== 'zh' && lang !== 'en') return;
+      
+      // 设置HTML lang属性
+      document.documentElement.lang = lang;
+      
+      // 保存到localStorage
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+      
+      // 更新页面标题
+      document.title = i18n[lang].ui_title;
+      
+      // 更新命令描述（如果commands.js支持多语言）
+      if (typeof initializeCommandDescriptions === 'function') {
+        initializeCommandDescriptions();
+      }
+      
+      // 应用语言到页面
+      applyLanguage();
+      
+      // 更新语言按钮状态
+      updateLanguageButtons(lang);
+      
+      // 重新渲染常用命令按钮
+      if (typeof renderFavorites === 'function') {
+        renderFavorites();
+      }
+      
+      console.log('Language switched to:', lang);
+    }
+
+    // 初始化语言切换器
+    function initLanguageSwitcher() {
+      const langButtons = document.querySelectorAll('.lang-btn');
+      langButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lang = btn.dataset.lang;
+          switchLanguage(lang);
+        });
+      });
+      
+      // 初始化按钮状态
+      const currentLang = getCurrentLanguage();
+      updateLanguageButtons(currentLang);
     }
   </script>
 </head>
@@ -1351,34 +1929,85 @@
       <div class="title-section">
         <h1 data-i18n="ui_title">📷 ZCam Http Commands</h1>
         <div class="button-group">
-          <a href="https://github.com/Jack-vexel-ws/zcamhttp" id="github-link" class="github-btn" title="View on GitHub" target="_blank">
+          <a href="https://github.com/Jack-vexel-ws/zcamhttp" id="github-link" class="github-btn" data-i18n-title="ui_github_btn_title" target="_blank">
             <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
             </svg>
           </a>
-          <a href="https://github.com/imaginevision/Z-Camera-Doc/blob/master/E2/protocol/http/http.md" id="zcam-doc-btn" class="zcam-doc-btn" title="View ZCAM Http API Doc" target="_blank">
+          <a href="https://github.com/imaginevision/Z-Camera-Doc/blob/master/E2/protocol/http/http.md" id="zcam-doc-btn" class="zcam-doc-btn" data-i18n-title="ui_zcam_doc_btn_title" target="_blank">
             <img src="images/zcam_icon.svg" class="zcam-doc-icon" alt="ZCAM Icon">
           </a>
+          <div class="language-switcher">
+            <button class="lang-btn" data-lang="zh" title="中文">中</button>
+            <button class="lang-btn" data-lang="en" title="English">EN</button>
+          </div>
         </div>
       </div>
 
       <!-- IP地址输入框 -->
       <div class="ip-section">
-        <label for="ip-input" data-i18n="ui_iplabel">🌐 目标IP地址:</label>
-        <div class="ip-input-container">
-          <input type="text" id="ip-input" placeholder="192.168.1.100" value="192.168.1.100">
-          <button id="camera-admin-btn" class="camera-admin-btn" data-i18n-title="ui_camera_admin_btn_title" onclick="openCameraAdmin()">
-            <svg class="camera-admin-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-            </svg>
-          </button>
+        <!-- 模式选择器 - 标签页 -->
+        <div class="ip-mode-selector">
+          <button class="ip-mode-tab active" data-mode="single" data-i18n="ui_ip_mode_single">单目标IP</button>
+          <button class="ip-mode-tab" data-mode="continuous" data-i18n="ui_ip_mode_continuous">连续IP</button>
+          <button class="ip-mode-tab" data-mode="discrete" data-i18n="ui_ip_mode_discrete">离散IP</button>
+        </div>
+
+        <!-- 单IP模式容器 -->
+        <div class="ip-mode-container" data-mode="single">
+          <label for="ip-input-single" data-i18n="ui_iplabel">🌐 目标IP地址:</label>
+          <div class="ip-input-container">
+            <input type="text" id="ip-input-single" placeholder="192.168.1.100" value="192.168.1.100">
+            <button id="camera-admin-btn" class="camera-admin-btn" data-i18n-title="ui_camera_admin_btn_title" onclick="openCameraAdmin()">
+              <svg class="camera-admin-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- 连续IP模式容器 -->
+        <div class="ip-mode-container" data-mode="continuous" style="display:none;">
+          <div class="ip-input-row">
+            <div class="ip-input-group">
+              <label for="ip-input-start" data-i18n="ui_ip_start_label">起始IP地址:</label>
+              <input type="text" id="ip-input-start" placeholder="192.168.1.100" value="192.168.1.100">
+            </div>
+            <div class="ip-input-group">
+              <label for="ip-input-end" data-i18n="ui_ip_end_label">结束IP（第4段数字）:</label>
+              <div class="refresh-interval-wrapper">
+                <input type="number" id="ip-input-end" class="refresh-interval-input" placeholder="200" value="200" min="1" max="255">
+                <div class="refresh-interval-controls">
+                  <button type="button" class="refresh-interval-btn" id="ip-end-increase">
+                    <svg viewBox="0 0 10 10" fill="currentColor">
+                      <path d="M5 2L8 7H2L5 2Z"/>
+                    </svg>
+                  </button>
+                  <button type="button" class="refresh-interval-btn" id="ip-end-decrease">
+                    <svg viewBox="0 0 10 10" fill="currentColor">
+                      <path d="M5 8L2 3H8L5 8Z"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 离散IP模式容器 -->
+        <div class="ip-mode-container" data-mode="discrete" style="display:none;">
+          <label for="ip-input-discrete" class="ip-tooltip" data-i18n="ui_ip_discrete_label">IP地址范围:</label>
+          <input type="text" id="ip-input-discrete" placeholder="192.168.1.100-200, 192.168.1.4, 192.168.1.116,121,119" value="">
         </div>
       </div>
 
       <!-- 搜索框 -->
       <div class="search-section">
-        <input type="text" id="search" data-i18n-placeholder="ui_search_placeholder"
-          placeholder="输入关键字搜索命令，或点击搜索结果将URL填入此处，按回车执行" autocomplete="off">
+        <div class="search-input-group">
+          <input type="text" id="search" data-i18n-placeholder="ui_search_placeholder"
+            placeholder="输入关键字搜索命令，或点击搜索结果将URL填入此处，按回车执行" autocomplete="off">
+          <button class="action-btn action-btn-execute" id="btn-execute-command" data-i18n="ui_btn_execute">执行</button>
+        </div>
         <div class="results-container">
           <ul id="results"></ul>
         </div>
@@ -1408,6 +2037,9 @@
     // 添加错误处理和调试信息
     console.log("HTML page loading started");
 
+    // 语言选择本地存储管理（需要在detectLanguage之前定义）
+    const LANGUAGE_STORAGE_KEY = 'zcamLanguage';
+
     // 检测并设置语言
     const currentLang = detectLanguage();
     console.log(t("debug_language_detected") + ":", currentLang);
@@ -1429,19 +2061,55 @@
 
     // IP地址本地存储管理
     const IP_STORAGE_KEY = 'zcamLastIP';
+    const IP_MODE_KEY = 'zcamIPMode';
     const DEFAULT_IP = '192.168.1.100';
+    
+    // HTTP请求超时时间配置（毫秒）
+    // 当相机IP不存在或相机已关机时，需要等待此时间后才会超时
+    // 默认30秒，可根据网络环境调整：局域网建议10-30秒，广域网建议30-60秒
+    const HTTP_REQUEST_TIMEOUT = 3000; // 3秒
 
-    const ipInput = document.getElementById("ip-input");
+    // DOM元素引用
+    const ipInputSingle = document.getElementById("ip-input-single");
+    const ipInputStart = document.getElementById("ip-input-start");
+    const ipInputEnd = document.getElementById("ip-input-end");
+    const ipInputDiscrete = document.getElementById("ip-input-discrete");
+    const ipModeTabs = document.querySelectorAll('.ip-mode-tab');
     const input = document.getElementById("search");
     const results = document.getElementById("results");
     const favButtons = document.getElementById("fav-buttons");
     const responseContent = document.getElementById("response-content");
     const clearResponseBtn = document.getElementById("clear-response");
 
+    // 向后兼容：保留旧的ipInput引用指向单IP输入框
+    const ipInput = ipInputSingle;
+
+    // 初始化IP模式
+    const savedMode = localStorage.getItem(IP_MODE_KEY) || 'single';
+    // 设置标签页active状态
+    ipModeTabs.forEach(tab => {
+      if (tab.getAttribute('data-mode') === savedMode) {
+        tab.classList.add('active');
+      } else {
+        tab.classList.remove('active');
+      }
+    });
+    switchIPMode(savedMode);
+
     // 初始化IP地址输入框
     const savedIP = loadIPFromStorage();
-    ipInput.value = savedIP;
-    console.log('IP input initialized with:', savedIP);
+    if (savedMode === 'single') {
+      ipInputSingle.value = savedIP;
+    } else if (savedMode === 'continuous') {
+      const savedStart = localStorage.getItem('zcamLastIP_continuous_start') || savedIP;
+      const savedEnd = localStorage.getItem('zcamLastIP_continuous_end') || '200';
+      ipInputStart.value = savedStart;
+      ipInputEnd.value = savedEnd;
+    } else if (savedMode === 'discrete') {
+      const savedDiscrete = localStorage.getItem('zcamLastIP_discrete') || '';
+      ipInputDiscrete.value = savedDiscrete;
+    }
+    console.log('IP input initialized with mode:', savedMode, 'value:', savedIP);
 
     // 搜索历史记录管理
     let searchHistory = JSON.parse(localStorage.getItem('zcamSearchHistory') || '[]');
@@ -1461,26 +2129,293 @@
 
     console.log('Initializing search history:', searchHistory);
 
-    // Get current IP address
-    function getCurrentIP() {
-      return ipInput.value.trim() || DEFAULT_IP;
+    // ===== IP解析函数组 =====
+    
+    // 获取当前IP模式
+    function getCurrentIPMode() {
+      const activeTab = document.querySelector('.ip-mode-tab.active');
+      return activeTab ? activeTab.getAttribute('data-mode') : 'single';
     }
 
-    // 保存IP地址到本地存储
-    function saveIPToStorage(ip) {
-      if (ip && ip.trim() !== '') {
-        localStorage.setItem(IP_STORAGE_KEY, ip.trim());
-        console.log('IP address saved to storage:', ip.trim());
+    // 解析单IP
+    function parseSingleIP() {
+      const ip = ipInputSingle.value.trim();
+      if (!ip) return [];
+      // 验证IP格式
+      const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+      if (!ipRegex.test(ip)) return [];
+      return [ip];
+    }
+
+    // 解析连续IP
+    function parseContinuousIP() {
+      const startIP = ipInputStart.value.trim();
+      const endNum = parseInt(ipInputEnd.value.trim());
+      
+      if (!startIP || isNaN(endNum)) return [];
+      
+      // 验证起始IP格式
+      const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+      if (!ipRegex.test(startIP)) return [];
+      
+      // 提取前3段IP
+      const parts = startIP.split('.');
+      if (parts.length !== 4) return [];
+      
+      const baseIP = parts.slice(0, 3).join('.');
+      const startNum = parseInt(parts[3]);
+      
+      if (isNaN(startNum) || startNum < 1 || startNum > 255) return [];
+      if (endNum < 1 || endNum > 255) return [];
+      
+      // 如果起始数字大于结束数字，自动交换它们
+      let actualStartNum = startNum;
+      let actualEndNum = endNum;
+      if (startNum > endNum) {
+        actualStartNum = endNum;
+        actualEndNum = startNum;
+      }
+      
+      // 生成IP列表（包含两端）
+      const ipList = [];
+      for (let i = actualStartNum; i <= actualEndNum; i++) {
+        ipList.push(`${baseIP}.${i}`);
+      }
+      
+      return ipList;
+    }
+
+    // 解析离散IP
+    function parseDiscreteIP() {
+      const input = ipInputDiscrete.value.trim();
+      if (!input) return [];
+      
+      const ipList = [];
+      // 支持多种分隔符：半角/全角逗号、分号、反斜杠
+      // 正则表达式匹配：, ， ; ； / ／
+      const parts = input.split(/[,\s，；;\/／]+/).map(p => p.trim()).filter(p => p);
+      let currentBaseIP = ''; // 存储当前的基础IP（前3段），用于处理简写数字
+      
+      for (const part of parts) {
+        // 检查是否是范围格式 (192.168.1.100-200 或 192.168.1.100~200)
+        const rangeMatch = part.match(/^(\d{1,3}\.\d{1,3}\.\d{1,3}\.)(\d{1,3})\s*[-~]\s*(\d{1,3})$/);
+        if (rangeMatch) {
+          const baseIP = rangeMatch[1];
+          let startNum = parseInt(rangeMatch[2]);
+          let endNum = parseInt(rangeMatch[3]);
+          
+          if (startNum >= 1 && startNum <= 255 && endNum >= 1 && endNum <= 255) {
+            // 如果起始数字大于结束数字，自动交换它们
+            if (startNum > endNum) {
+              const temp = startNum;
+              startNum = endNum;
+              endNum = temp;
+            }
+            
+            // 更新当前基础IP
+            currentBaseIP = baseIP;
+            for (let i = startNum; i <= endNum; i++) {
+              ipList.push(`${baseIP}${i}`);
+            }
+          }
+        } else {
+          // 检查是否是完整IP (192.168.1.116)
+          const ipRegex = /^(\d{1,3}\.\d{1,3}\.\d{1,3}\.)(\d{1,3})$/;
+          const ipMatch = part.match(ipRegex);
+          if (ipMatch) {
+            // 完整IP，更新当前基础IP并添加到列表
+            currentBaseIP = ipMatch[1];
+            const fullIP = part;
+            // 验证IP各部分是否在有效范围内
+            const ipParts = fullIP.split('.').map(Number);
+            if (ipParts.every(p => p >= 0 && p <= 255)) {
+              ipList.push(fullIP);
+            }
+          } else {
+            // 检查是否只是数字 (如 121)
+            const numMatch = part.match(/^(\d{1,3})$/);
+            if (numMatch) {
+              const num = parseInt(numMatch[1]);
+              if (num >= 1 && num <= 255 && currentBaseIP) {
+                // 使用当前基础IP + 数字
+                ipList.push(`${currentBaseIP}${num}`);
+              }
+              // 如果没有基础IP，忽略这个数字（或可以报错，但这里选择忽略）
+            }
+          }
+        }
+      }
+      
+      // 去重并排序
+      return [...new Set(ipList)].sort((a, b) => {
+        const aParts = a.split('.').map(Number);
+        const bParts = b.split('.').map(Number);
+        for (let i = 0; i < 4; i++) {
+          if (aParts[i] !== bParts[i]) {
+            return aParts[i] - bParts[i];
+          }
+        }
+        return 0;
+      });
+    }
+
+    // 主解析函数：根据当前模式解析IP列表
+    function parseIPList() {
+      const mode = getCurrentIPMode();
+      switch (mode) {
+        case 'single':
+          return parseSingleIP();
+        case 'continuous':
+          return parseContinuousIP();
+        case 'discrete':
+          return parseDiscreteIP();
+        default:
+          return parseSingleIP();
       }
     }
 
-    // 从本地存储加载IP地址
+    // 获取代表性IP地址（用于显示和URL组合）
+    function _getMainIP() {
+      const mode = getCurrentIPMode();
+      switch (mode) {
+        case 'single':
+          return ipInputSingle.value.trim() || DEFAULT_IP;
+        case 'continuous':
+          return ipInputStart.value.trim() || DEFAULT_IP;
+        case 'discrete':
+          const ipList = parseDiscreteIP();
+          return ipList.length > 0 ? ipList[0] : DEFAULT_IP;
+        default:
+          return DEFAULT_IP;
+      }
+    }
+
+    // Get current IP address (保持向后兼容)
+    function getCurrentIP() {
+      return _getMainIP();
+    }
+
+    // 加载IP地址到输入框（根据模式）
+    function loadIPToInputs(mode) {
+      if (mode === 'single') {
+        const savedIP = localStorage.getItem('zcamLastIP_single') || localStorage.getItem(IP_STORAGE_KEY) || DEFAULT_IP;
+        if (ipInputSingle) {
+          ipInputSingle.value = savedIP;
+        }
+      } else if (mode === 'continuous') {
+        const savedStart = localStorage.getItem('zcamLastIP_continuous_start') || DEFAULT_IP;
+        const savedEnd = localStorage.getItem('zcamLastIP_continuous_end') || '200';
+        if (ipInputStart) {
+          ipInputStart.value = savedStart;
+        }
+        if (ipInputEnd) {
+          ipInputEnd.value = savedEnd;
+        }
+      } else if (mode === 'discrete') {
+        const savedDiscrete = localStorage.getItem('zcamLastIP_discrete') || '';
+        if (ipInputDiscrete) {
+          ipInputDiscrete.value = savedDiscrete;
+        }
+      }
+    }
+
+    // IP模式切换函数
+    function switchIPMode(mode) {
+      // 先保存当前模式的配置（在切换前保存）
+      const currentMode = getCurrentIPMode();
+      if (currentMode !== mode) {
+        saveIPToStorage();
+      }
+      
+      // 隐藏所有模式容器
+      document.querySelectorAll('.ip-mode-container').forEach(container => {
+        container.style.display = 'none';
+      });
+      
+      // 显示选中的模式容器
+      const selectedContainer = document.querySelector(`.ip-mode-container[data-mode="${mode}"]`);
+      if (selectedContainer) {
+        selectedContainer.style.display = 'block';
+      }
+      
+      // 加载新模式的保存值
+      loadIPToInputs(mode);
+      
+      // 保存模式到本地存储
+      localStorage.setItem(IP_MODE_KEY, mode);
+      console.log('IP mode switched to:', mode);
+      
+      // 如果是离散IP模式，重新初始化tooltip（延迟执行，确保DOM已更新）
+      if (mode === 'discrete') {
+        setTimeout(() => {
+          if (typeof initIPTooltip === 'function') {
+            initIPTooltip();
+          }
+        }, 100);
+      }
+    }
+
+    // 保存IP地址到本地存储（根据当前模式）
+    function saveIPToStorage(ip) {
+      const mode = getCurrentIPMode();
+      if (mode === 'single') {
+        // 单IP模式：优先使用传入的参数，否则从输入框读取
+        const singleIP = ip ? ip.trim() : (ipInputSingle ? ipInputSingle.value.trim() : '');
+        if (singleIP !== '') {
+          localStorage.setItem(IP_STORAGE_KEY, singleIP);
+          localStorage.setItem('zcamLastIP_single', singleIP);
+          console.log('Single IP address saved to storage:', singleIP);
+        }
+      } else if (mode === 'continuous') {
+        // 连续IP模式：保存起始IP和结束数字
+        const startIP = ipInputStart ? ipInputStart.value.trim() : '';
+        const endNum = ipInputEnd ? ipInputEnd.value.trim() : '';
+        if (startIP !== '') {
+          localStorage.setItem('zcamLastIP_continuous_start', startIP);
+          console.log('Continuous IP start saved to storage:', startIP);
+        }
+        if (endNum !== '') {
+          localStorage.setItem('zcamLastIP_continuous_end', endNum);
+          console.log('Continuous IP end saved to storage:', endNum);
+        }
+        // 向后兼容：如果有传入ip参数，也保存到旧键
+        if (ip && ip.trim() !== '') {
+          localStorage.setItem(IP_STORAGE_KEY, ip.trim());
+        }
+      } else if (mode === 'discrete') {
+        // 离散IP模式：保存完整的IP列表字符串
+        const discreteIP = ipInputDiscrete ? ipInputDiscrete.value.trim() : '';
+        if (discreteIP !== '') {
+          localStorage.setItem('zcamLastIP_discrete', discreteIP);
+          console.log('Discrete IP list saved to storage:', discreteIP);
+        }
+      }
+    }
+
+    // 从本地存储加载IP地址（向后兼容）
     function loadIPFromStorage() {
+      const mode = getCurrentIPMode();
+      if (mode === 'single') {
+        const savedIP = localStorage.getItem('zcamLastIP_single') || localStorage.getItem(IP_STORAGE_KEY);
+        if (savedIP && savedIP.trim() !== '') {
+          console.log('IP address loaded from storage:', savedIP);
+          return savedIP.trim();
+        }
+      } else if (mode === 'continuous') {
+        const savedStart = localStorage.getItem('zcamLastIP_continuous_start');
+        if (savedStart) return savedStart;
+      } else if (mode === 'discrete') {
+        const savedDiscrete = localStorage.getItem('zcamLastIP_discrete');
+        if (savedDiscrete) return savedDiscrete;
+      }
+      
+      // 向后兼容：尝试加载旧的IP_STORAGE_KEY
       const savedIP = localStorage.getItem(IP_STORAGE_KEY);
       if (savedIP && savedIP.trim() !== '') {
-        console.log('IP address loaded from storage:', savedIP);
+        console.log('IP address loaded from storage (legacy):', savedIP);
         return savedIP.trim();
       }
+      
       console.log('No saved IP found, using default:', DEFAULT_IP);
       return DEFAULT_IP;
     }
@@ -1562,25 +2497,44 @@
         existingHistory.remove();
       }
 
-      // Insert below search box, before results-container
-      const searchSection = input.parentNode;
+      // Insert below search input group, before results-container
+      const searchSection = input.closest('.search-section');
+      const searchInputGroup = input.closest('.search-input-group');
       const resultsContainer = searchSection.querySelector('.results-container');
-      searchSection.insertBefore(historyContainer, resultsContainer);
+      
+      // 插入到搜索输入组之后，结果容器之前
+      if (searchInputGroup && searchInputGroup.nextSibling) {
+        searchSection.insertBefore(historyContainer, searchInputGroup.nextSibling);
+      } else {
+        searchSection.insertBefore(historyContainer, resultsContainer);
+      }
+      
+      // 关键：当历史面板显示时，临时隐藏结果容器，避免flex布局竞争空间
+      if (resultsContainer) {
+        resultsContainer.style.display = 'none';
+      }
 
       // Force wait for DOM rendering to complete before calculating height
+      // 使用双重延迟，确保DOM完全渲染和布局计算完成
       setTimeout(() => {
         // Dynamically calculate and set maximum height of history panel
         adjustHistoryPanelHeight(historyContainer);
+        
+        // 再次延迟，确保高度设置生效
+        setTimeout(() => {
+          // 强制触发重排，确保高度设置生效
+          historyContainer.offsetHeight;
+          
+          // Check container status again
+          console.log('=== ' + t('debug_container_status') + ' ===');
+          console.log(t('debug_container_element') + ':', historyContainer);
+          console.log(t('debug_container_height') + ':', historyContainer.offsetHeight);
+          console.log(t('debug_container_style') + ':', getComputedStyle(historyContainer));
+          console.log(t('debug_list_element') + ':', historyContainer.querySelector('.search-history-list'));
+          console.log(t('debug_list_height') + ':', historyContainer.querySelector('.search-history-list').offsetHeight);
 
-        // Check container status again
-        console.log('=== ' + t('debug_container_status') + ' ===');
-        console.log(t('debug_container_element') + ':', historyContainer);
-        console.log(t('debug_container_height') + ':', historyContainer.offsetHeight);
-        console.log(t('debug_container_style') + ':', getComputedStyle(historyContainer));
-        console.log(t('debug_list_element') + ':', historyContainer.querySelector('.search-history-list'));
-        console.log(t('debug_list_height') + ':', historyContainer.querySelector('.search-history-list').offsetHeight);
-
-        console.log('Search history displayed');
+          console.log('Search history displayed');
+        }, 50);
       }, 100);
     }
 
@@ -1592,6 +2546,9 @@
       // Use processed URL (if query is a URL)
       input.value = query;
       input.focus();
+      
+      // 更新执行按钮状态
+      updateExecuteButtonState();
 
       // Check if it's URL format
       if (query.startsWith('http://') || query.startsWith('https://')) {
@@ -1631,84 +2588,137 @@
       hideSearchHistory();
     }
 
-    // Dynamically adjust history panel height
+    // Dynamically adjust history panel height - 简化版本，使用与搜索结果列表相同的flex布局
     function adjustHistoryPanelHeight(historyContainer) {
-      if (!historyContainer) return;
+      if (!historyContainer) {
+        console.error('adjustHistoryPanelHeight: historyContainer is null');
+        return;
+      }
 
       // Get position of favorites section
       const favoritesSection = document.querySelector('.favorites');
-      if (!favoritesSection) return;
-
-      // Get position of search input
-      const searchInput = document.getElementById('search');
-      if (!searchInput) return;
-
-      // Use more stable height calculation method - not dependent on panel width
-      const searchInputBottom = searchInput.offsetTop + searchInput.offsetHeight;
-      const favoritesTop = favoritesSection.offsetTop;
-      const availableHeight = favoritesTop - searchInputBottom - 20; // Subtract 20px margin
-
-      // Get current content height of history panel
-      const headerHeight = historyContainer.querySelector('.search-history-header').offsetHeight;
-      const listElement = historyContainer.querySelector('.search-history-list');
-
-      // Calculate actual required height - use more stable calculation method
-      const historyItems = document.querySelectorAll('.search-history-item');
-      const itemHeight = 46; // Base height of each history item
-      const totalContentHeight = historyItems.length * itemHeight;
-
-      // Key fix: actual required height = header height + total list item height
-      const actualTotalHeight = headerHeight + totalContentHeight;
-
-      // Add width change diagnostic information
-      const leftPanel = document.querySelector('.left-panel');
-      const panelWidth = leftPanel ? leftPanel.offsetWidth : 'unknown';
-
-      console.log('=== ' + t('debug_height_calculation') + ' ===');
-      console.log(t('debug_panel_width') + ':', panelWidth);
-      console.log(t('debug_header_height') + ':', headerHeight);
-      console.log(t('debug_item_count') + ':', historyItems.length);
-      console.log(t('debug_item_height') + ':', itemHeight);
-      console.log(t('debug_total_height') + ':', totalContentHeight);
-      console.log(t('debug_actual_height') + ':', actualTotalHeight);
-      console.log(t('debug_available_space') + ':', availableHeight);
-      console.log(t('debug_search_bottom') + ':', searchInputBottom);
-      console.log(t('debug_favorites_top') + ':', favoritesTop);
-
-      // Use more stable height calculation strategy
-      let calculatedHeight;
-
-      if (availableHeight > actualTotalHeight + 50) {
-        // Sufficient space: use actual required height + buffer space
-        calculatedHeight = actualTotalHeight + 40;
-        console.log('Strategy 1: Sufficient space, use actual required height + buffer');
-      } else if (availableHeight > headerHeight + 100) {
-        // Limited space: use available space minus header height
-        calculatedHeight = availableHeight - headerHeight - 20;
-        console.log('Strategy 2: Limited space, use available space minus header height');
-      } else {
-        // Very limited space: use minimum height, ensure all content can be displayed
-        calculatedHeight = Math.max(250, actualTotalHeight + 20);
-        console.log('Strategy 3: Very limited space, use minimum height');
+      if (!favoritesSection) {
+        console.error('adjustHistoryPanelHeight: favoritesSection not found');
+        return;
       }
 
-      // Set list height
-      listElement.style.maxHeight = `${calculatedHeight}px`;
-      console.log('Final list height set to:', calculatedHeight);
+      // Get position of search input group (which contains both input and execute button)
+      const searchInput = document.getElementById('search');
+      if (!searchInput) {
+        console.error('adjustHistoryPanelHeight: search input not found');
+        return;
+      }
+      const searchInputGroup = searchInput.closest('.search-input-group');
+      if (!searchInputGroup) {
+        console.error('adjustHistoryPanelHeight: search-input-group not found');
+        return;
+      }
 
-      // Force apply styles and recalculate layout
-      listElement.style.display = 'block';
-      listElement.style.height = 'auto';
-      listElement.style.minHeight = `${calculatedHeight}px`;
+      // 计算可用高度（更精确的计算，减少空间浪费）
+      const searchInputBottom = searchInputGroup.offsetTop + searchInputGroup.offsetHeight;
+      const favoritesTop = favoritesSection.offsetTop;
+      // 只减去历史面板的 margin-top (5px) 和 margin-bottom (10px)
+      const availableHeight = favoritesTop - searchInputBottom - 5 - 10; // 只减去15px（margin-top + margin-bottom）
 
-      // Force container to recalculate height
-      historyContainer.style.display = 'block';
-      historyContainer.style.height = 'auto';
-      historyContainer.style.minHeight = `${actualTotalHeight + 20}px`;
-
-      // Force browser to recalculate layout
-      listElement.offsetHeight; // Trigger reflow
-      historyContainer.offsetHeight; // Trigger reflow
+      // 获取header高度
+      const headerElement = historyContainer.querySelector('.search-history-header');
+      if (!headerElement) {
+        console.error('adjustHistoryPanelHeight: header not found');
+        return;
+      }
+      const headerHeight = headerElement.offsetHeight;
+      
+      // 获取列表元素
+      const listElement = historyContainer.querySelector('.search-history-list');
+      if (!listElement) {
+        console.error('adjustHistoryPanelHeight: list element not found');
+        return;
+      }
+      
+      // 获取历史记录项数量
+      const historyItems = historyContainer.querySelectorAll('.search-history-item');
+      const itemCount = historyItems.length;
+      const itemHeight = 36; // 每个历史记录项的高度（已调整为更紧凑）
+      const totalContentHeight = itemCount * itemHeight;
+      
+      // 直接设置容器高度为可用高度，确保占据所有可用空间
+      // 使用 !important 确保覆盖其他可能影响高度的样式
+      // 不限制最大400px，直接使用可用高度（但至少200px）
+      const containerHeight = Math.max(200, availableHeight);
+      
+      // 检查 .search-section 的实际高度，确保历史面板不会超出
+      const searchSection = historyContainer.closest('.search-section');
+      const searchSectionHeight = searchSection ? searchSection.clientHeight : null;
+      const searchSectionAvailable = searchSection ? searchSection.scrollHeight : null;
+      
+      console.log('Search section dimensions:', {
+        clientHeight: searchSectionHeight,
+        scrollHeight: searchSectionAvailable,
+        offsetHeight: searchSection ? searchSection.offsetHeight : null
+      });
+      console.log('Calculated container height:', containerHeight);
+      
+      // 如果 search-section 的实际可用高度更小，使用较小的值
+      let finalHeight = containerHeight;
+      if (searchSectionHeight) {
+        // 计算 search-section 中历史面板可以使用的实际空间
+        // 减去输入框高度、历史面板的 margin-top 和 margin-bottom
+        const sectionAvailable = searchSectionHeight - searchInputGroup.offsetHeight - 5 - 10;
+        if (sectionAvailable < containerHeight) {
+          finalHeight = Math.max(200, sectionAvailable);
+          console.log('Adjusted height due to search-section limit:', finalHeight, '(section available:', sectionAvailable, ')');
+        }
+      }
+      
+      historyContainer.style.setProperty('height', `${finalHeight}px`, 'important');
+      historyContainer.style.setProperty('max-height', `${finalHeight}px`, 'important');
+      historyContainer.style.setProperty('flex', 'none', 'important');
+      // 移除 flex: 1，使用固定高度，避免被其他flex元素压缩
+      
+      const listAvailableHeight = containerHeight - headerHeight;
+      
+      console.log('=== History Panel Height Calculation ===');
+      console.log('Search input group:', {
+        offsetTop: searchInputGroup.offsetTop,
+        offsetHeight: searchInputGroup.offsetHeight,
+        bottom: searchInputBottom
+      });
+      console.log('Favorites section:', {
+        offsetTop: favoritesTop
+      });
+      console.log('Available height calculation:', {
+        favoritesTop: favoritesTop,
+        searchInputBottom: searchInputBottom,
+        marginTop: 5,
+        marginBottom: 15,
+        extraMargin: 5,
+        availableHeight: availableHeight
+      });
+      console.log('Container dimensions:', {
+        headerHeight: headerHeight,
+        containerHeight: containerHeight,
+        listAvailableHeight: listAvailableHeight
+      });
+      console.log('Content dimensions:', {
+        itemCount: itemCount,
+        itemHeight: itemHeight,
+        totalContentHeight: totalContentHeight,
+        willShowScrollbar: totalContentHeight > listAvailableHeight
+      });
+      console.log('Computed styles:', {
+        containerHeight: getComputedStyle(historyContainer).height,
+        containerMaxHeight: getComputedStyle(historyContainer).maxHeight,
+        listHeight: getComputedStyle(listElement).height,
+        listMaxHeight: getComputedStyle(listElement).maxHeight,
+        listFlex: getComputedStyle(listElement).flex
+      });
+      console.log('Actual dimensions:', {
+        containerOffsetHeight: historyContainer.offsetHeight,
+        containerClientHeight: historyContainer.clientHeight,
+        listOffsetHeight: listElement.offsetHeight,
+        listClientHeight: listElement.clientHeight,
+        listScrollHeight: listElement.scrollHeight
+      });
     }
 
 
@@ -1717,6 +2727,12 @@
       const historyContainer = document.querySelector('.search-history-container');
       if (historyContainer) {
         historyContainer.remove();
+      }
+      
+      // 恢复结果容器的显示
+      const resultsContainer = document.querySelector('.results-container');
+      if (resultsContainer) {
+        resultsContainer.style.display = '';
       }
     }
 
@@ -1973,7 +2989,7 @@
     function isDangerousCommand(commandName) {
       const dangerousCommands = [
       'reboot', 'shutdown', 
-      'clear settings', 
+      'clear setting',  // 清除相机设置（注意：命令key是单数"setting"）
       'stop record', 
       'format storage card', 
       'format to fat32', 
@@ -1988,36 +3004,268 @@
       );
     }
 
-    // 显示危险命令确认对话框
-    function showDangerousCommandConfirm(commandName, url, callback) {
+    // 显示危险命令确认对话框（支持多IP模式）
+    function showDangerousCommandConfirm(commandName, url, ipList, callback) {
       // 使用原生confirm对话框
-      const message = `${t('ui_msg_warning_command')}\n\n${t('ui_msg_warning_command_desc')}\n${commandName}\n\n${t('ui_msg_warning_command_confirm')}`;
+      let message = `${t('ui_msg_warning_command')}\n\n${t('ui_msg_warning_command_desc')}\n${commandName}`;
+      if (ipList && ipList.length > 1) {
+        message += `\n\n${t('ui_msg_warning_command_multi_camera').replace('{count}', ipList.length)}`;
+      }
+      message += `\n\n${t('ui_msg_warning_command_confirm')}`;
       
       const confirmed = confirm(message);
       callback(confirmed);
     }
 
-    // 执行HTTP请求并显示响应
+    // 多IP执行函数
+    async function executeCommandMultiIP(urlTemplate, commandName, ipList) {
+      const timeout = HTTP_REQUEST_TIMEOUT;
+      const results = [];
+
+      // 为每个IP创建请求Promise
+      const promises = ipList.map(async (ip) => {
+        const url = replaceIPInURL(urlTemplate, ip);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+        try {
+          const response = await fetch(url, {
+            signal: controller.signal
+          });
+
+          clearTimeout(timeoutId);
+          const contentType = response.headers.get('content-type');
+          let responseText = await response.text();
+          let isSuccess = true;
+
+          // 尝试解析JSON并检查code值
+          if (contentType && contentType.includes('application/json')) {
+            try {
+              const jsonObj = JSON.parse(responseText);
+              if (jsonObj.code !== undefined && jsonObj.code !== 0) {
+                isSuccess = false;
+              }
+              responseText = formatJSON(responseText);
+            } catch (e) {
+              // JSON解析失败，保持原文本
+            }
+          }
+
+          if (!response.ok) {
+            isSuccess = false;
+            responseText = `${t('ui_error_http')}${response.status} ${response.statusText}`;
+          }
+
+          return {
+            ip,
+            url,
+            responseText,
+            isSuccess,
+            error: null
+          };
+        } catch (error) {
+          clearTimeout(timeoutId);
+          let errorText = '';
+          if (error.name === 'AbortError') {
+            errorText = `${t('ui_error_timeout')}${timeout / 1000}${t('ui_error_timeout_suffix')}`;
+          } else {
+            errorText = `${t('ui_error_network')}${error.message}`;
+          }
+
+          return {
+            ip,
+            url,
+            responseText: errorText,
+            isSuccess: false,
+            error: error
+          };
+        }
+      });
+
+      // 使用Promise.allSettled确保所有请求都完成
+      const settledResults = await Promise.allSettled(promises);
+      
+      // 处理结果
+      settledResults.forEach((result, index) => {
+        if (result.status === 'fulfilled') {
+          results.push(result.value);
+        } else {
+          // 如果Promise被拒绝，创建一个错误结果
+          results.push({
+            ip: ipList[index],
+            url: replaceIPInURL(urlTemplate, ipList[index]),
+            responseText: `${t('ui_error_network')}${result.reason?.message || 'Unknown error'}`,
+            isSuccess: false,
+            error: result.reason
+          });
+        }
+      });
+
+      return results;
+    }
+
+    // 添加多IP命令响应
+    function addCommandResponseMultiIP(commandName, ipList, results) {
+      const timestamp = new Date().toLocaleString(getTimestampLocale());
+      
+      // 统计成功和失败数量
+      const successCount = results.filter(r => r.isSuccess).length;
+      const failCount = results.length - successCount;
+      const totalCount = results.length;
+
+      // 创建汇总响应项
+      const summaryItem = document.createElement('div');
+      summaryItem.className = 'response-item response-summary';
+      summaryItem.innerHTML = `
+        <div class="response-summary-header">
+          <div>
+            <span class="response-command-name">${commandName}</span>
+            <span class="response-timestamp">${timestamp}</span>
+          </div>
+          <div class="response-summary-stats">
+            <span class="response-summary-stat">总计: ${totalCount}</span>
+            <span class="response-summary-stat success">成功: ${successCount}</span>
+            <span class="response-summary-stat error">失败: ${failCount}</span>
+            <span class="response-summary-expand">▶</span>
+          </div>
+        </div>
+        <div class="response-details">
+          ${results.map(result => {
+            const statusClass = result.isSuccess ? 'success' : 'error';
+            const statusText = result.isSuccess ? '成功' : '失败';
+            return `
+              <div class="response-detail-item ${statusClass}">
+                <div class="response-detail-item-header">
+                  <span class="response-detail-ip">${result.ip}</span>
+                  <span class="response-detail-status ${statusClass}">${statusText}</span>
+                </div>
+                <div class="response-url">
+                  <span class="response-url-text">${result.url}</span>
+                  <button class="response-copy-url-btn" onclick="copyToClipboard('${result.url.replace(/'/g, "\\'")}')" title="${t('ui_copy_url_tooltip')}">📋</button>
+                </div>
+                <div class="response-data"><pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;">${result.responseText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre></div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      // 添加展开/收起功能
+      summaryItem.addEventListener('click', (e) => {
+        // 如果点击的是复制按钮，不触发展开/收起
+        if (e.target.closest('.response-copy-url-btn')) {
+          return;
+        }
+        summaryItem.classList.toggle('expanded');
+      });
+
+      // 添加到响应面板开头
+      responseContent.insertBefore(summaryItem, responseContent.firstChild);
+      responseContent.scrollTop = 0;
+    }
+
+    // 执行HTTP请求并显示响应（支持单IP和多IP模式）
     async function executeCommand(url, commandName) {
+      const mode = getCurrentIPMode();
+      const ipList = parseIPList();
+
+      // 如果是单IP模式或只有一个IP，使用原有逻辑
+      if (mode === 'single' || ipList.length === 1) {
+        // 检查是否是危险命令
+        if (isDangerousCommand(commandName)) {
+          showDangerousCommandConfirm(commandName, url, ipList, (confirmed) => {
+            if (confirmed) {
+              // 用户确认后执行命令
+              executeCommandInternal(url, commandName);
+            }
+          });
+          return;
+        }
+
+        // 直接执行命令
+        executeCommandInternal(url, commandName);
+        return;
+      }
+
+      // 多IP模式
+      if (ipList.length === 0) {
+        alert(t('ui_error_no_valid_ip'));
+        return;
+      }
+
+      // 从URL中提取相对路径作为模板
+      let urlTemplate = url;
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        // 提取相对路径部分
+        const urlObj = new URL(url);
+        urlTemplate = urlObj.pathname + urlObj.search;
+      }
+
       // 检查是否是危险命令
       if (isDangerousCommand(commandName)) {
-        showDangerousCommandConfirm(commandName, url, (confirmed) => {
+        showDangerousCommandConfirm(commandName, url, ipList, (confirmed) => {
           if (confirmed) {
-            // 用户确认后执行命令
-            executeCommandInternal(url, commandName);
+            // 用户确认后执行多IP命令
+            executeCommandMultiIPInternal(urlTemplate, commandName, ipList);
           }
         });
         return;
       }
 
-      // 直接执行命令
-      executeCommandInternal(url, commandName);
+      // 直接执行多IP命令
+      executeCommandMultiIPInternal(urlTemplate, commandName, ipList);
+    }
+
+    // 多IP执行内部函数
+    async function executeCommandMultiIPInternal(urlTemplate, commandName, ipList) {
+      // 显示加载状态
+      const loadingItem = document.createElement('div');
+      loadingItem.className = 'response-item response-loading';
+      loadingItem.innerHTML = `
+        <div class="response-item-header">
+          <span class="response-command-name">${commandName}</span>
+          <span class="response-timestamp">${t('ui_btn_executing')}</span>
+        </div>
+        <div class="response-url">
+          <span class="response-url-text">${t('ui_msg_executing_multi_ip').replace('{count}', ipList.length)}</span>
+        </div>
+        <div class="response-data">
+          <div style="text-align: center; color: var(--text-secondary); padding: 20px;">
+            🔄 ${t('ui_msg_executing')} ${t('ui_msg_executing_multi_camera').replace('{count}', ipList.length)}
+          </div>
+        </div>
+      `;
+
+      responseContent.insertBefore(loadingItem, responseContent.firstChild);
+      responseContent.scrollTop = 0;
+
+      try {
+        // 执行多IP命令
+        const results = await executeCommandMultiIP(urlTemplate, commandName, ipList);
+
+        // 移除加载项
+        if (loadingItem.parentNode) {
+          responseContent.removeChild(loadingItem);
+        }
+
+        // 添加汇总响应
+        addCommandResponseMultiIP(commandName, ipList, results);
+      } catch (error) {
+        // 移除加载项
+        if (loadingItem.parentNode) {
+          responseContent.removeChild(loadingItem);
+        }
+
+        // 添加错误响应
+        const timestamp = new Date().toLocaleString(getTimestampLocale());
+        addCommandResponse(commandName, urlTemplate, `${t('ui_error_network')}${error.message}`, false, timestamp);
+      }
     }
 
     // 内部执行命令函数
     async function executeCommandInternal(url, commandName) {
-      // 定义超时时间（在函数顶部，确保所有代码块都能访问）
-      const timeout = 30000; // 3 second timeout, can be adjusted as needed
+      // 使用全局配置的超时时间
+      const timeout = HTTP_REQUEST_TIMEOUT;
       let loadingItem = null;
       let timeoutId = null;
 
@@ -2194,52 +3442,63 @@
       list.forEach(cmd => {
         const li = document.createElement("li");
 
-        // 点击命令将URL填入搜索框
-        const span = document.createElement("span");
+        // 命令内容区域 - 2行显示
+        const commandContent = document.createElement("div");
+        commandContent.className = "command-content";
+        
+        // 第一行：命令描述
+        const description = document.createElement("div");
+        description.className = "command-description";
         // 如果有匹配到的多语言描述，优先显示它
-        const displayText = cmd.displayDescription ? 
-          `${cmd.key} (${cmd.displayDescription}) → ${cmd.url}` : 
-          `${cmd.key} → ${cmd.url}`;
-        span.textContent = displayText;
-        span.onclick = () => {
+        const displayDescription = cmd.displayDescription || cmd.description || cmd.key;
+        description.textContent = displayDescription;
+        
+        // 第二行：命令路径（如果太长会显示...）
+        const url = document.createElement("div");
+        url.className = "command-url";
+        url.textContent = cmd.url;
+        url.title = cmd.url; // 完整URL作为tooltip
+        
+        commandContent.appendChild(description);
+        commandContent.appendChild(url);
+        
+        // 点击命令内容将URL填入搜索框
+        // 使用 mousedown 事件，因为它在 blur 事件之前触发，可以避免输入框失去焦点时清空结果列表
+        commandContent.onmousedown = (e) => {
+          // 阻止默认行为，防止输入框失去焦点
+          e.preventDefault();
+          
           // 将完整URL填入搜索框
           input.value = cmd.url;
-          input.focus();
 
-            // Select all URL text, like browser address bar
-            input.select();
+          // Select all URL text, like browser address bar
+          input.select();
 
-            // 清空搜索结果
-            results.innerHTML = "";
+          // 清空搜索结果
+          results.innerHTML = "";
 
           // 将完整URL添加到历史记录
           addSearchHistory(cmd.url);
+          
+          // 更新执行按钮状态
+          updateExecuteButtonState();
+          
+          // 保持输入框焦点
+          input.focus();
         };
 
-        // 复制按钮
+        // 复制按钮 - 图标样式
         const copyBtn = document.createElement("button");
-        copyBtn.textContent = t('ui_btn_copy');
-        copyBtn.className = "copy-btn";
+        copyBtn.innerHTML = "📋"; // 使用复制图标
+        copyBtn.className = "copy-btn-icon";
+        copyBtn.title = t('ui_btn_copy'); // tooltip提示
         copyBtn.onclick = (e) => {
           e.stopPropagation();
           copyToClipboard(cmd.url);
         };
 
-        // 打开按钮（在新标签页中打开）
-        const openBtn = document.createElement("button");
-        openBtn.textContent = t('ui_btn_open');
-        openBtn.className = "open-btn";
-        openBtn.onclick = (e) => {
-          e.stopPropagation();
-          // 检查URL中是否需要填写参数
-          if (checkURLParameters(cmd.url)) {
-            window.open(cmd.url, '_blank');
-          }
-        };
-
-        li.appendChild(span);
+        li.appendChild(commandContent);
         li.appendChild(copyBtn);
-        li.appendChild(openBtn);
         results.appendChild(li);
       });
     }
@@ -2254,13 +3513,44 @@
 
 
 
-    // IP地址变化时重新渲染常用命令按钮
-    ipInput.addEventListener("input", () => {
+    // IP模式切换事件 - 标签页点击
+    ipModeTabs.forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        const mode = tab.getAttribute('data-mode');
+        
+        // 更新标签页active状态
+        ipModeTabs.forEach(t => {
+          if (t === tab) {
+            t.classList.add('active');
+          } else {
+            t.classList.remove('active');
+          }
+        });
+        
+        // 切换模式（内部会保存当前模式并加载新模式的值）
+        switchIPMode(mode);
+        
+        // 重新渲染常用命令按钮
+        renderFavorites();
+        
+        // 如果当前有搜索结果，也重新显示
+        const query = input.value.trim();
+        if (query !== "") {
+          showResults(searchCommands(query));
+        }
+
+        // 如果历史记录面板正在显示，重新显示以更新URL
+        const historyContainer = document.querySelector('.search-history-container');
+        if (historyContainer) {
+          showSearchHistory();
+        }
+      });
+    });
+
+    // IP地址变化时重新渲染常用命令按钮（支持三种模式）
+    function handleIPInputChange() {
       // 保存IP地址到本地存储
-      const currentIP = ipInput.value.trim();
-      if (currentIP !== '') {
-        saveIPToStorage(currentIP);
-      }
+      saveIPToStorage();
 
       renderFavorites();
       // 如果当前有搜索结果，也重新显示
@@ -2274,13 +3564,125 @@
       if (historyContainer) {
         showSearchHistory();
       }
-    });
+    }
+
+    // 为所有IP输入框添加事件监听
+    if (ipInputSingle) {
+      ipInputSingle.addEventListener("input", handleIPInputChange);
+    }
+    if (ipInputStart) {
+      ipInputStart.addEventListener("input", handleIPInputChange);
+    }
+    if (ipInputEnd) {
+      ipInputEnd.addEventListener("input", handleIPInputChange);
+      
+      // 结束IP输入框的增减控制按钮事件
+      const ipEndIncrease = document.getElementById('ip-end-increase');
+      const ipEndDecrease = document.getElementById('ip-end-decrease');
+      
+      if (ipEndIncrease) {
+        ipEndIncrease.addEventListener('click', (e) => {
+          e.preventDefault();
+          const currentValue = parseInt(ipInputEnd.value, 10) || 200;
+          const maxValue = parseInt(ipInputEnd.max, 10) || 255;
+          if (currentValue < maxValue) {
+            ipInputEnd.value = currentValue + 1;
+            handleIPInputChange();
+          }
+        });
+      }
+      
+      if (ipEndDecrease) {
+        ipEndDecrease.addEventListener('click', (e) => {
+          e.preventDefault();
+          const currentValue = parseInt(ipInputEnd.value, 10) || 200;
+          const minValue = parseInt(ipInputEnd.min, 10) || 1;
+          if (currentValue > minValue) {
+            ipInputEnd.value = currentValue - 1;
+            handleIPInputChange();
+          }
+        });
+      }
+    }
+    if (ipInputDiscrete) {
+      ipInputDiscrete.addEventListener("input", handleIPInputChange);
+    }
+
+    // 全局点击事件监听器，用于关闭命令列表（当点击外部时）
+    let resultsClickHandler = null;
+    
+    function setupResultsClickOutsideHandler() {
+      // 移除旧的监听器（如果存在）
+      if (resultsClickHandler) {
+        document.removeEventListener('click', resultsClickHandler);
+        resultsClickHandler = null;
+      }
+      
+      // 添加新的点击监听器
+      resultsClickHandler = (event) => {
+        const resultsContainer = document.querySelector('.results-container');
+        
+        // 只要命令列表有内容，就检查点击位置（适用于所有情况：?、关键字搜索等）
+        if (resultsContainer && results.children.length > 0) {
+          const isClickInsideResults = resultsContainer.contains(event.target) ||
+                                       event.target === input ||
+                                       input.contains(event.target) ||
+                                       event.target.closest('.search-input-group');
+          
+          // 如果点击不在命令列表内，且不在输入框组内，则清空命令列表
+          if (!isClickInsideResults) {
+            results.innerHTML = "";
+            // 移除监听器
+            document.removeEventListener('click', resultsClickHandler);
+            resultsClickHandler = null;
+          }
+        }
+      };
+      
+      // 延迟添加监听器，确保当前点击事件先处理
+      setTimeout(() => {
+        document.addEventListener('click', resultsClickHandler);
+      }, 0);
+    }
+
+    // 更新执行按钮状态（根据输入框内容）
+    function updateExecuteButtonState() {
+      const executeBtn = document.getElementById('btn-execute-command');
+      if (executeBtn) {
+        const query = input.value.trim();
+        
+        // 检查是否是有效的完整命令
+        let isValidCommand = false;
+        
+        if (query !== "") {
+          // 必须是完整的URL格式（http:// 或 https:// 开头）
+          if (query.startsWith('http://') || query.startsWith('https://')) {
+            // 检查是否包含未填写的参数（$ 开头的参数占位符）
+            const hasUnfilledParams = /\$([^/&?]+)/.test(query);
+            if (!hasUnfilledParams) {
+              isValidCommand = true;
+            }
+          }
+        }
+        
+        executeBtn.disabled = !isValidCommand; // 只有有效的完整命令才启用按钮
+      }
+    }
 
     // 搜索框输入事件
     input.addEventListener("input", () => {
       const query = input.value.trim();
+      
+      // 更新执行按钮状态
+      updateExecuteButtonState();
+      
       if (query === "") {
         results.innerHTML = "";
+        // 移除命令列表的点击外部关闭监听器
+        if (resultsClickHandler) {
+          document.removeEventListener('click', resultsClickHandler);
+          resultsClickHandler = null;
+        }
         // 当输入框为空时，显示历史记录
         showSearchHistory();
       } else if (query === "?" || query === "？") {
@@ -2290,9 +3692,13 @@
           url: replaceIPInURL(cmd.url, getCurrentIP())
         })));
         hideSearchHistory(); // 隐藏历史记录
+        // 设置点击外部关闭命令列表的监听器
+        setupResultsClickOutsideHandler();
       } else {
         showResults(searchCommands(query));
         hideSearchHistory(); // 隐藏历史记录
+        // 设置点击外部关闭命令列表的监听器（关键字搜索时也需要）
+        setupResultsClickOutsideHandler();
       }
     });
 
@@ -2304,6 +3710,22 @@
         addSearchHistory(query);
       }
 
+      // 延迟隐藏命令列表，让点击事件先触发（mousedown 事件在 blur 之前触发）
+      // 如果命令列表有内容，延迟隐藏命令列表（适用于所有情况：?、关键字搜索等）
+      if (results.children.length > 0) {
+        setTimeout(() => {
+          // 再次检查，避免在点击事件执行过程中被清空
+          if (results.children.length > 0) {
+            results.innerHTML = "";
+            // 移除点击外部关闭命令列表的监听器
+            if (resultsClickHandler) {
+              document.removeEventListener('click', resultsClickHandler);
+              resultsClickHandler = null;
+            }
+          }
+        }, 100);
+      }
+
       // 延迟隐藏历史记录，让点击事件先触发
       // 增加延迟时间，确保点击事件能够正常处理
       setTimeout(() => {
@@ -2311,28 +3733,66 @@
       }, 500);
     });
 
-    // 搜索框获得焦点时显示历史记录
+    // 搜索框获得焦点时显示历史记录或命令列表
     input.addEventListener("focus", () => {
       console.log('Search input focused, current value:', input.value.trim());
       // 禁用浏览器的默认历史记录
       input.setAttribute('autocomplete', 'off');
       input.setAttribute('list', '');
 
-      if (input.value.trim() === "") {
+      const query = input.value.trim();
+      if (query === "") {
         console.log('Search input is empty, showing history');
         showSearchHistory();
+      } else if (query === "?" || query === "？") {
+        // 当输入框内容为 ? 或 ？ 时，显示命令列表
+        console.log('Search input is question mark, showing command list');
+        showResults(commands.map(cmd => ({
+          ...cmd,
+          url: replaceIPInURL(cmd.url, getCurrentIP())
+        })));
+        hideSearchHistory(); // 隐藏历史记录
+        // 设置点击外部关闭命令列表的监听器
+        setupResultsClickOutsideHandler();
       } else {
         console.log('Search input has content, not showing history');
       }
     });
 
-    // IP地址输入框失去焦点时保存IP地址
-    ipInput.addEventListener("blur", () => {
-      const currentIP = ipInput.value.trim();
-      if (currentIP !== '') {
-        saveIPToStorage(currentIP);
+    // 窗口失去焦点时（切换到其他窗口或标签页）自动隐藏历史记录和命令列表
+    window.addEventListener("blur", () => {
+      // 隐藏历史记录
+      hideSearchHistory();
+      // 隐藏命令列表
+      results.innerHTML = "";
+      // 移除点击外部关闭命令列表的监听器
+      if (resultsClickHandler) {
+        document.removeEventListener('click', resultsClickHandler);
+        resultsClickHandler = null;
       }
     });
+
+    // IP地址输入框失去焦点时保存IP地址（支持三种模式）
+    if (ipInputSingle) {
+      ipInputSingle.addEventListener("blur", () => {
+        saveIPToStorage();
+      });
+    }
+    if (ipInputStart) {
+      ipInputStart.addEventListener("blur", () => {
+        saveIPToStorage();
+      });
+    }
+    if (ipInputEnd) {
+      ipInputEnd.addEventListener("blur", () => {
+        saveIPToStorage();
+      });
+    }
+    if (ipInputDiscrete) {
+      ipInputDiscrete.addEventListener("blur", () => {
+        saveIPToStorage();
+      });
+    }
 
     // 搜索框失去焦点时隐藏历史记录（延迟执行，让点击事件先触发）
     // 注意：这个事件监听器已经在上面合并到新的blur事件中了
@@ -2353,23 +3813,41 @@
       return true; // 返回true表示可以执行
     }
 
+    // 执行命令的函数（供回车和执行按钮调用）
+    function executeCommandFromInput() {
+      const query = input.value.trim();
+
+      // 检查是否是URL格式
+      if (query.startsWith('http://') || query.startsWith('https://')) {
+        // 检查是否需要填写参数
+        if (checkURLParameters(query)) {
+          // 是URL，执行命令并添加到历史记录
+          const commandName = extractCommandNameFromURL(query);
+          executeCommand(query, commandName);
+          addSearchHistory(query);
+        }
+      }
+    }
+
     // 按回车键时执行命令或添加搜索历史
     input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
-        const query = input.value.trim();
-
-        // 检查是否是URL格式
-        if (query.startsWith('http://') || query.startsWith('https://')) {
-          // 检查是否需要填写参数
-          if (checkURLParameters(query)) {
-            // 是URL，执行命令并添加到历史记录
-            const commandName = extractCommandNameFromURL(query);
-            executeCommand(query, commandName);
-            addSearchHistory(query);
-          }
-        }
+        executeCommandFromInput();
       }
     });
+
+    // 执行按钮点击事件（延迟执行，确保DOM已加载）
+    setTimeout(() => {
+      const executeBtn = document.getElementById('btn-execute-command');
+      if (executeBtn) {
+        // 初始化按钮状态（输入框为空时禁用）
+        updateExecuteButtonState();
+        
+        executeBtn.addEventListener("click", () => {
+          executeCommandFromInput();
+        });
+      }
+    }, 0);
 
     // 常用命令按钮生成
     function renderFavorites() {
@@ -2385,18 +3863,21 @@
             const currentIP = getCurrentIP();
             const dynamicURL = replaceIPInURL(cmd.url, currentIP);
 
-            // 将完整URL添加到搜索历史
-            addSearchHistory(dynamicURL);
+            // 将URL填入搜索框
+            input.value = dynamicURL;
+            input.focus();
 
-              // 将URL填入搜索框，而不是直接执行
-              input.value = dynamicURL;
-              input.focus();
-
-              // 全选URL文本，就像浏览器地址栏那样
-              input.select();
+            // 全选URL文本，就像浏览器地址栏那样
+            input.select();
 
             // 清空搜索结果
             results.innerHTML = "";
+
+            // 更新执行按钮状态
+            updateExecuteButtonState();
+
+            // 执行命令（executeCommandFromInput 会处理参数检查和历史记录添加）
+            executeCommandFromInput();
           };
           favButtons.appendChild(btn);
         }
@@ -2418,6 +3899,83 @@
     // 应用语言到页面
     applyLanguage();
 
+    // 初始化语言切换器
+    initLanguageSwitcher();
+
+    // 初始化IP tooltip功能（参考multi-camera-index.html的实现）
+    function initIPTooltip() {
+      // 在函数内部获取tooltip容器，确保DOM已加载
+      const tooltipPopup = document.getElementById('ip-tooltip-popup');
+      if (!tooltipPopup) {
+        console.warn('Tooltip container not found');
+        return;
+      }
+      
+      // 强制更新tooltip文本
+      const tooltipText = t('ui_ip_hint_tip');
+      const tooltipElements = document.querySelectorAll('.ip-tooltip');
+      console.log('Initializing tooltip, found elements:', tooltipElements.length);
+      
+      tooltipElements.forEach(element => {
+        // 强制设置data-tooltip
+        element.setAttribute('data-tooltip', tooltipText);
+        console.log('Tooltip text set for element:', element, 'text:', tooltipText);
+
+        // 移除可能存在的旧事件监听器（通过重新绑定）
+        const newElement = element.cloneNode(true);
+        element.parentNode.replaceChild(newElement, element);
+
+        newElement.addEventListener('mouseenter', (e) => {
+          let text = newElement.getAttribute('data-tooltip');
+          if (!text || text.trim() === '') {
+            text = t('ui_ip_hint_tip');
+            newElement.setAttribute('data-tooltip', text);
+          }
+          if (text && tooltipPopup) {
+            tooltipPopup.textContent = text;
+            tooltipPopup.classList.add('show');
+            // 初始位置设置
+            tooltipPopup.style.left = (e.clientX + 10) + 'px';
+            tooltipPopup.style.top = (e.clientY + 10) + 'px';
+            console.log('Tooltip shown');
+          }
+        });
+        
+        newElement.addEventListener('mousemove', (e) => {
+          if (tooltipPopup && tooltipPopup.classList.contains('show')) {
+            // 显示在鼠标位置的右下角，偏移10px
+            const offsetX = 10;
+            const offsetY = 10;
+            let left = e.clientX + offsetX;
+            let top = e.clientY + offsetY;
+            
+            // 先设置位置，然后检查边界
+            tooltipPopup.style.left = left + 'px';
+            tooltipPopup.style.top = top + 'px';
+            
+            // 检查是否超出右边界，如果超出则显示在左侧
+            const tooltipRect = tooltipPopup.getBoundingClientRect();
+            if (tooltipRect.right > window.innerWidth) {
+              left = e.clientX - tooltipRect.width - offsetX;
+              tooltipPopup.style.left = left + 'px';
+            }
+            
+            // 检查是否超出下边界，如果超出则显示在上方
+            if (tooltipRect.bottom > window.innerHeight) {
+              top = e.clientY - tooltipRect.height - offsetY;
+              tooltipPopup.style.top = top + 'px';
+            }
+          }
+        });
+        
+        newElement.addEventListener('mouseleave', () => {
+          if (tooltipPopup) {
+            tooltipPopup.classList.remove('show');
+          }
+        });
+      });
+    }
+
     // 初始化命令描述
     if (typeof initializeCommandDescriptions === 'function') {
       initializeCommandDescriptions();
@@ -2426,6 +3984,11 @@
 
     console.log("Starting to render favorite buttons");
     renderFavorites();
+
+    // 初始化IP tooltip（延迟执行，确保DOM完全加载）
+    setTimeout(() => {
+      initIPTooltip();
+    }, 0);
 
     console.log("Page initialization completed");
 
@@ -2477,6 +4040,9 @@
     window.saveIPToStorage = saveIPToStorage; 
     window.loadIPFromStorage = loadIPFromStorage;
   </script>
+  
+  <!-- IP输入提示tooltip容器 -->
+  <div class="ip-tooltip-popup" id="ip-tooltip-popup"></div>
 </body>
 
 </html>
